@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>South B Hospital - Queue System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --blue: #2B5BA8;
+            --green: #6AAC2B;
+            --light-blue: #EEF3FB;
+            --light-green: #F2F9EA;
+        }
+
+        body {
+            background: #f4f6f9;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: white;
+            padding: 14px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--green);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .logo-south { font-size: 1.8rem; font-weight: 900; color: var(--blue); letter-spacing: 2px; }
+        .logo-south span { color: var(--green); }
+        .logo-hospital { font-size: 0.9rem; font-weight: 700; color: var(--green); letter-spacing: 4px; }
+        .logo-tagline { font-size: 0.75rem; color: #999; font-style: italic; margin-top: 2px; }
+
+        .header-right { text-align: right; }
+        .header-right #clock { font-size: 2rem; font-weight: 700; color: var(--blue); }
+        .header-right #date { font-size: 0.85rem; color: #888; }
+
+        .live-banner {
+            background: var(--blue);
+            color: white;
+            padding: 10px 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .blink {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .main {
+            flex: 1;
+            padding: 20px 30px;
+        }
+
+        .counters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .counter-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-top: 4px solid var(--blue);
+        }
+
+        .counter-header {
+            background: var(--blue);
+            color: white;
+            padding: 12px 18px;
+        }
+
+        .counter-header .counter-name { font-size: 1.1rem; font-weight: 700; }
+        .counter-header .counter-dept { font-size: 0.8rem; opacity: 0.8; margin-top: 2px; }
+
+        .counter-body { padding: 16px 18px; }
+
+        .now-token {
+            text-align: center;
+            padding: 16px;
+            background: var(--light-green);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 2px solid var(--green);
+        }
+
+        .now-token .label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .now-token .token-num { font-size: 2.5rem; font-weight: 900; color: var(--green); line-height: 1.1; }
+
+        .counter-idle { text-align: center; padding: 20px; color: #bbb; font-size: 0.9rem; }
+
+        .waiting-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+
+        .waiting-tokens { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .waiting-token {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .waiting-token.emergency { background: #fdecea; color: #c62828; border: 1px solid #ef9a9a; }
+        .waiting-token.urgent { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+        .waiting-token.normal { background: var(--light-blue); color: var(--blue); border: 1px solid #90caf9; }
+
+        .no-waiting { color: #ccc; font-size: 0.85rem; }
+
+        footer {
+            background: white;
+            border-top: 3px solid var(--blue);
+            padding: 10px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        footer span { color: var(--blue); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <div class="logo-south">SOUTH <span>+B</span></div>
+        <div class="logo-hospital">H O S P I T A L</div>
+        <div class="logo-tagline">we care</div>
+    </div>
+    <div class="header-right">
+        <div id="clock">--:--:--</div>
+        <div id="date"></div>
+    </div>
+</header>
+
+<div class="live-banner">
+    <span class="blink"></span>
+    Queue Management System — Live View
+</div>
+
+<div class="main">
+    <div class="counters-grid" id="counters-grid">
+        <div style="color:#aaa; padding:40px; text-align:center;">Loading...</div>
+    </div>
+</div>
+
+<footer>
+    <div>South B Hospital — Queue Management System</div>
+    <div>Auto-refreshes every <span>5 seconds</span></div>
+</footer>
+
+<script>
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').textContent = now.toLocaleTimeString();
+        document.getElementById('date').textContent = now.toLocaleDateString('en-KE', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function fetchQueue() {
+        fetch('/api/method/hqs.hqs.api.get_queue_dashboard')
+            .then(res => res.json())
+            .then(data => {
+                if (data.message) renderCounters(data.message);
+            })
+            .catch(err => console.error('Queue fetch error:', err));
+    }
+
+    function renderCounters({ counters, serving, waiting }) {
+        const grid = document.getElementById('counters-grid');
+
+        if (!counters || counters.length === 0) {
+            grid.innerHTML = '<div style="color:#aaa;padding:40px;text-align:center;">No active counters found</div>';
+            return;
+        }
+
+        grid.innerHTML = counters.map(counter => {
+            const current = serving.find(s => s.counter === counter.counter_name);
+            const deptWaiting = waiting.filter(w => w.department === counter.department);
+
+            const nowServingHTML = current ? `
+                <div class="now-token">
+                    <div class="label">Now Serving</div>
+                    <div class="token-num">${current.token_number}</div>
+                </div>
+            ` : `<div class="counter-idle">— Available —</div>`;
+
+            const waitingHTML = deptWaiting.length > 0 ? `
+                <div class="waiting-label">Waiting (${deptWaiting.length})</div>
+                <div class="waiting-tokens">
+                    ${deptWaiting.map(w => `
+                        <span class="waiting-token ${w.priority.toLowerCase()}">${w.token_number}</span>
+                    `).join('')}
+                </div>
+            ` : `<div class="no-waiting">No patients waiting</div>`;
+
+            return `
+                <div class="counter-card">
+                    <div class="counter-header">
+                        <div class="counter-name">${counter.counter_name}</div>
+                        <div class="counter-dept">${counter.department}</div>
+                    </div>
+                    <div class="counter-body">
+                        ${nowServingHTML}
+                        ${waitingHTML}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    fetchQueue();
+    setInterval(fetchQueue, 5000);
+</script>
+
+</body>
+</html>

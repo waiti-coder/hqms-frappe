@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>South B Hospital - Self Check-in</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --blue: #2B5BA8;
+            --green: #6AAC2B;
+            --light-blue: #EEF3FB;
+            --light-green: #F2F9EA;
+        }
+
+        body {
+            background: #f4f6f9;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--green);
+        }
+
+        .logo-south { font-size: 2rem; font-weight: 900; color: var(--blue); letter-spacing: 2px; }
+        .logo-south span { color: var(--green); }
+        .logo-hospital { font-size: 1rem; font-weight: 700; color: var(--green); letter-spacing: 4px; }
+        .logo-tagline { font-size: 0.8rem; color: #999; font-style: italic; }
+
+        .header-right #clock { font-size: 1.8rem; font-weight: 700; color: var(--blue); text-align: right; }
+        .header-right #date { font-size: 0.85rem; color: #888; text-align: right; }
+
+        .main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .screen { display: none; width: 100%; max-width: 600px; }
+        .screen.active { display: block; }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 5px solid var(--blue);
+        }
+
+        .card h2 { color: var(--blue); font-size: 1.8rem; margin-bottom: 8px; }
+        .card p { color: #888; margin-bottom: 30px; font-size: 1rem; }
+
+        .form-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        input[type="tel"],
+        input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            transition: border 0.2s;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        input:focus { border-color: var(--blue); }
+
+        .reason-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .reason-btn {
+            padding: 20px 10px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            background: white;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #555;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .reason-btn:hover { border-color: var(--blue); color: var(--blue); background: var(--light-blue); }
+        .reason-btn.selected { border-color: var(--blue); background: var(--blue); color: white; }
+        .reason-btn.emergency.selected { border-color: #c62828; background: #c62828; color: white; }
+        .reason-icon { font-size: 2rem; display: block; margin-bottom: 8px; }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary { background: var(--blue); color: white; }
+        .btn-primary:hover { background: #1e4a8f; }
+        .btn-secondary { background: white; color: var(--blue); border: 2px solid var(--blue); }
+        .btn-secondary:hover { background: var(--light-blue); }
+
+        .patient-info {
+            background: var(--light-blue);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--blue);
+        }
+
+        .patient-info .name { font-size: 1.4rem; font-weight: 700; color: var(--blue); }
+        .patient-info .phone { color: #888; font-size: 0.9rem; }
+
+        .token-display { text-align: center; padding: 20px 0; }
+        .token-display .token-num { font-size: 5rem; font-weight: 900; color: var(--green); line-height: 1; }
+        .token-display .token-label { font-size: 1rem; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .token-display .message { font-size: 1.1rem; color: #555; margin-top: 16px; line-height: 1.6; }
+        .token-display .dept { display: inline-block; background: var(--light-green); color: var(--green); border: 1px solid var(--green); padding: 6px 20px; border-radius: 20px; font-weight: 700; margin-top: 12px; }
+
+        .checkmark { width: 80px; height: 80px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 2.5rem; color: white; }
+
+        .error-msg { color: #c62828; font-size: 0.9rem; margin-top: 8px; display: none; }
+
+        footer {
+            background: white;
+            border-top: 3px solid var(--blue);
+            padding: 12px 40px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div>
+        <div class="logo-south">SOUTH <span>+B</span></div>
+        <div class="logo-hospital">H O S P I T A L</div>
+        <div class="logo-tagline">we care</div>
+    </div>
+    <div class="header-right">
+        <div id="clock">--:--:--</div>
+        <div id="date"></div>
+    </div>
+</header>
+
+<div class="main">
+
+    <!-- SCREEN 1: Phone Number -->
+    <div class="screen active" id="screen-phone">
+        <div class="card">
+            <h2>Welcome</h2>
+            <p>Please enter your phone number to check in</p>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="phone-input" placeholder="e.g. 0712 345 678" maxlength="15" />
+                <div class="error-msg" id="phone-error">Please enter a valid phone number</div>
+            </div>
+            <button class="btn btn-primary" onclick="checkPhone()">Continue</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 2a: New Patient -->
+    <div class="screen" id="screen-new">
+        <div class="card">
+            <h2>New Patient</h2>
+            <p>Please fill in your details to register</p>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="new-name" placeholder="Enter your full name" />
+                <div class="error-msg" id="name-error">Please enter your full name</div>
+            </div>
+            <div class="form-group">
+                <label>Reason for Visit</label>
+                <div class="reason-grid">
+                    <button class="reason-btn" onclick="selectReason('General', this)">
+                        <span class="reason-icon">🏥</span>General
+                    </button>
+                    <button class="reason-btn" onclick="selectReason('Dental', this)">
+                        <span class="reason-icon">🦷</span>Dental
+                    </button>
+                    <button class="reason-btn emergency" onclick="selectReason('Emergency', this)">
+                        <span class="reason-icon">🚨</span>Emergency
+                    </button>
+                </div>
+                <div class="error-msg" id="reason-error">Please select a reason for visit</div>
+            </div>
+            <button class="btn btn-primary" onclick="submitNew()">Check In</button>
+            <button class="btn btn-secondary" onclick="goBack()">Back</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 2b: Returning Patient -->
+    <div class="screen" id="screen-returning">
+        <div class="card">
+            <h2>Welcome Back!</h2>
+            <p>We found your details</p>
+            <div class="patient-info">
+                <div class="name" id="returning-name"></div>
+                <div class="phone" id="returning-phone"></div>
+            </div>
+            <div class="form-group">
+                <label>Reason for Visit</label>
+                <div class="reason-grid">
+                    <button class="reason-btn" onclick="selectReason('General', this)">
+                        <span class="reason-icon">🏥</span>General
+                    </button>
+                    <button class="reason-btn" onclick="selectReason('Dental', this)">
+                        <span class="reason-icon">🦷</span>Dental
+                    </button>
+                    <button class="reason-btn emergency" onclick="selectReason('Emergency', this)">
+                        <span class="reason-icon">🚨</span>Emergency
+                    </button>
+                </div>
+                <div class="error-msg" id="reason-error-r">Please select a reason for visit</div>
+            </div>
+            <button class="btn btn-primary" onclick="submitReturning()">Check In</button>
+            <button class="btn btn-secondary" onclick="goBack()">Back</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: Token -->
+    <div class="screen" id="screen-token">
+        <div class="card">
+            <div class="token-display">
+                <div class="checkmark">✓</div>
+                <div class="token-label">Your Token Number</div>
+                <div class="token-num" id="token-display"></div>
+                <div class="message">
+                    Please proceed to <br>
+                    <span class="dept">Reception</span>
+                </div>
+                <p style="margin-top:20px; color:#aaa; font-size:0.9rem;">
+                    This screen will reset in <span id="countdown">10</span> seconds
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    South B Hospital — Self Check-in Kiosk &nbsp;|&nbsp; For assistance please speak to our staff
+</footer>
+
+<script>
+    let selectedReason = '';
+    let currentPhone = '';
+    let csrfToken = 'fetch';
+    let countdownTimer = null;
+
+    // Get CSRF token on load
+    fetch('/api/method/frappe.auth.get_logged_user', {credentials: 'include'})
+        .then(res => {
+            const token = res.headers.get('X-Frappe-CSRF-Token');
+            if (token) csrfToken = token;
+        })
+        .catch(() => {});
+
+    // Clock
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').textContent = now.toLocaleTimeString();
+        document.getElementById('date').textContent = now.toLocaleDateString('en-KE', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function goBack() {
+        selectedReason = '';
+        document.querySelectorAll('.reason-btn').forEach(b => b.classList.remove('selected'));
+        showScreen('screen-phone');
+    }
+
+    function selectReason(reason, btn) {
+        selectedReason = reason;
+        const grid = btn.closest('.reason-grid');
+        grid.querySelectorAll('.reason-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+    }
+
+    function checkPhone() {
+        const phone = document.getElementById('phone-input').value.trim();
+        const err = document.getElementById('phone-error');
+
+        if (!phone || phone.length < 9) {
+            err.style.display = 'block';
+            return;
+        }
+        err.style.display = 'none';
+        currentPhone = phone;
+
+        fetch('/api/method/hqs.hqs.api.check_patient', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Frappe-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({phone: phone})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message && data.message.exists) {
+                document.getElementById('returning-name').textContent = data.message.name;
+                document.getElementById('returning-phone').textContent = phone;
+                showScreen('screen-returning');
+            } else {
+                showScreen('screen-new');
+            }
+        })
+        .catch(() => showScreen('screen-new'));
+    }
+
+    function submitNew() {
+        const name = document.getElementById('new-name').value.trim();
+        const nameErr = document.getElementById('name-error');
+        const reasonErr = document.getElementById('reason-error');
+
+        let valid = true;
+        if (!name) { nameErr.style.display = 'block'; valid = false; } else { nameErr.style.display = 'none'; }
+        if (!selectedReason) { reasonErr.style.display = 'block'; valid = false; } else { reasonErr.style.display = 'none'; }
+        if (!valid) return;
+
+        submitCheckin(currentPhone, name, selectedReason);
+    }
+
+    function submitReturning() {
+        const reasonErr = document.getElementById('reason-error-r');
+        if (!selectedReason) { reasonErr.style.display = 'block'; return; }
+        reasonErr.style.display = 'none';
+
+        const name = document.getElementById('returning-name').textContent;
+        submitCheckin(currentPhone, name, selectedReason);
+    }
+
+    function submitCheckin(phone, name, reason) {
+        fetch('/api/method/hqs.hqs.api.create_patient_visit', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Frappe-CSRF-Token': csrfToken
+            },
+            body: JSON.stringify({phone: phone, full_name: name, reason_for_visit: reason})
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message && data.message.token) {
+                document.getElementById('token-display').textContent = data.message.token;
+                showScreen('screen-token');
+                startCountdown();
+            } else {
+                alert('Something went wrong. Please try again or speak to staff.');
+            }
+        })
+        .catch(() => alert('Connection error. Please try again.'));
+    }
+
+    function startCountdown() {
+        let count = 10;
+        document.getElementById('countdown').textContent = count;
+        countdownTimer = setInterval(() => {
+            count--;
+            document.getElementById('countdown').textContent = count;
+            if (count <= 0) {
+                clearInterval(countdownTimer);
+                resetKiosk();
+            }
+        }, 1000);
+    }
+
+    function resetKiosk() {
+        selectedReason = '';
+        currentPhone = '';
+        document.getElementById('phone-input').value = '';
+        document.getElementById('new-name').value = '';
+        document.querySelectorAll('.reason-btn').forEach(b => b.classList.remove('selected'));
+        showScreen('screen-phone');
+    }
+</script>
+
+</body>
+</html>
