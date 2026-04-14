@@ -1,0 +1,62 @@
+[
+ {
+  "department": "Reception",
+  "docstatus": 0,
+  "doctype": "Medical Department",
+  "modified": "2026-04-12 15:22:23.285512",
+  "name": "Reception",
+  "patient_care_type": null,
+  "portal_image": null,
+  "show_in_portal": 0
+ },
+ {
+  "department": "OPD",
+  "docstatus": 0,
+  "doctype": "Medical Department",
+  "modified": "2026-04-14 12:45:56.074964",
+  "name": "OPD",
+  "patient_care_type": null,
+  "portal_image": null,
+  "show_in_portal": 0
+ },
+ {
+  "department": "Pharmacy",
+  "docstatus": 0,
+  "doctype": "Medical Department",
+  "modified": "2026-04-14 12:45:56.296580",
+  "name": "Pharmacy",
+  "patient_care_type": null,
+  "portal_image": null,
+  "show_in_portal": 0
+ },
+ {
+  "department": "Dental",
+  "docstatus": 0,
+  "doctype": "Medical Department",
+  "modified": "2026-04-14 12:45:56.298719",
+  "name": "Dental",
+  "patient_care_type": null,
+  "portal_image": null,
+  "show_in_portal": 0
+ },
+ {
+  "department": "Emergency",
+  "docstatus": 0,
+  "doctype": "Medical Department",
+  "modified": "2026-04-14 12:45:56.300859",
+  "name": "Emergency",
+  "patient_care_type": null,
+  "portal_image": null,
+  "show_in_portal": 0
+ },
+ {
+  "department": "Triage",
+  "docstatus": 0,
+  "doctype": "Medical Department",
+  "modified": "2026-04-12 06:38:18.038697",
+  "name": "Triage",
+  "patient_care_type": "Intervention",
+  "portal_image": null,
+  "show_in_portal": 0
+ }
+]

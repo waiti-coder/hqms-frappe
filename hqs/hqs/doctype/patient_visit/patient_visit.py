@@ -1,27 +1,14 @@
 import frappe
 from frappe.model.document import Document
 
+# Mapping reason for visit to care pathway
+PATHWAY_MAP = {
+    "General": "General Pathway",
+    "Dental": "Dental Pathway",
+    "Emergency": "Emergency Pathway"
+}
 
 class PatientVisit(Document):
-    # begin: auto-generated types
-    # This code is auto-generated. Do not modify anything in this block.
-
-    from typing import TYPE_CHECKING
-
-    if TYPE_CHECKING:
-        from frappe.types import DF
-
-        full_name: DF.Data
-        is_new_patient: DF.Check
-        naming_series: DF.Literal["PV-.YYYY.-"]
-        patient: DF.Link | None
-        phone_number: DF.Data
-        queue_entry: DF.Link | None
-        reason_for_visit: DF.Literal["General", "Dental", "Emergency"]
-        status: DF.Literal["Waiting", "With Receptionist", "In Progress", "Completed"]
-        token_number: DF.Data | None
-        visit_date: DF.Date | None
-    # end: auto-generated types
 
     def before_insert(self):
         self.visit_date = frappe.utils.today()
@@ -51,6 +38,7 @@ class PatientVisit(Document):
             self.patient = new_patient.name
 
     def create_queue_entry(self):
+        # Get Reception department
         reception = frappe.db.get_value("Medical Department",
             {"department": ["like", "%Reception%"]}, "name"
         )
@@ -62,16 +50,26 @@ class PatientVisit(Document):
         if not reception:
             frappe.throw("No Reception department found. Please create one first.")
 
+        # Set priority based on reason
         priority = "Normal"
         if self.reason_for_visit == "Emergency":
             priority = "Emergency"
+
+        # Get care pathway based on reason for visit
+        care_pathway = PATHWAY_MAP.get(self.reason_for_visit)
+
+        # Validate pathway exists
+        if care_pathway and not frappe.db.exists("Care Pathways", care_pathway):
+            care_pathway = None
 
         queue_entry = frappe.get_doc({
             "doctype": "Queue Entry",
             "patient": self.patient,
             "department": reception,
             "priority": priority,
-            "status": "Waiting"
+            "status": "Waiting",
+            "care_pathway": care_pathway,
+            "current_step": 1
         })
         queue_entry.insert(ignore_permissions=True)
         frappe.db.commit()
