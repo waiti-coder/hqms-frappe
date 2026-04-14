@@ -1,0 +1,38 @@
+[
+ {
+  "counter_name": "Triage",
+  "department": "Triage",
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-12 15:21:25.299969",
+  "name": "Triage"
+ },
+ {
+  "counter_name": "Consultation",
+  "department": "Consultation",
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-12 15:23:32.819154",
+  "name": "Consultation"
+ },
+ {
+  "counter_name": "OPD",
+  "department": "OPD",
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-14 13:52:09.416252",
+  "name": "OPD"
+ },
+ {
+  "counter_name": "Reception",
+  "department": "Reception",
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-12 15:22:28.092705",
+  "name": "Reception"
+ }
+]
