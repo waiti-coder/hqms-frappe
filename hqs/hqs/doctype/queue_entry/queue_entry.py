@@ -2,47 +2,18 @@ import frappe
 from frappe.model.document import Document
 
 class QueueEntry(Document):
-    # begin: auto-generated types
-    # This code is auto-generated. Do not modify anything in this block.
-
-    from typing import TYPE_CHECKING
-
-    if TYPE_CHECKING:
-        from frappe.types import DF
-
-        appoinment: DF.Link | None
-        called_at: DF.Datetime | None
-        care_pathway: DF.Link | None
-        counter: DF.Link | None
-        current_step: DF.Int
-        department: DF.Link
-        enqueued_at: DF.Datetime | None
-        name: DF.Int | None
-        next_department: DF.Link | None
-        notes: DF.SmallText | None
-        patient: DF.Link
-        patient_name: DF.Data | None
-        priority: DF.Literal["Normal", "Urgent", "Emergency"]
-        served_at: DF.Datetime | None
-        status: DF.Literal["Waiting", "Called", "Serving", "Done", "No"]
-        token_number: DF.Data | None
-    # end: auto-generated types
 
     def before_insert(self):
         self.enqueued_at = frappe.utils.now()
-        self.token_number = self.generate_token()
+        if not self.token_number:
+            self.token_number = self.generate_token()
 
     def generate_token(self):
-        dept = frappe.db.get_value("Medical Department", self.department, "department") or self.department
-        prefix = dept[:3].upper()
-
         today = frappe.utils.today()
         count = frappe.db.count("Queue Entry", filters={
-            "department": self.department,
             "creation": [">=", today]
         })
-
-        return f"{prefix}-{str(count + 1).zfill(3)}"
+        return f"T-{str(count + 1).zfill(3)}"
 
     def on_update(self):
         if self.status == "Done":
@@ -77,7 +48,8 @@ class QueueEntry(Document):
             "priority": self.priority,
             "care_pathway": self.care_pathway,
             "current_step": next_step.order,
-            "status": "Waiting"
+            "status": "Waiting",
+            "token_number": self.token_number
         })
         new_entry.insert()
         frappe.db.commit()

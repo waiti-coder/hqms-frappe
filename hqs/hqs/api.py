@@ -4,7 +4,7 @@ import frappe
 @frappe.whitelist(allow_guest=True)
 def get_queue_dashboard():
     serving = frappe.get_all("Queue Entry",
-        filters={"status": "Serving"},
+        filters={"status": ["in", ["Called", "Serving"]]},
         fields=["token_number", "department", "counter", "priority"],
         order_by="called_at asc"
     )
@@ -67,7 +67,7 @@ def get_reception_stats():
     })
 
     serving = frappe.db.count("Queue Entry", filters={
-        "status": "Serving",
+        "status": ["in", ["Called", "Serving"]],
         "creation": [">=", today]
     })
 
@@ -92,4 +92,34 @@ def get_reception_stats():
         "serving": serving,
         "avg_time": avg_time
     }
-    # ththththt
+
+
+@frappe.whitelist()
+def call_next_patient(department: str, counter: str, queue_entry: str = None):
+    if queue_entry:
+        entry = frappe.get_doc("Queue Entry", queue_entry)
+    else:
+        priority_order = {"Emergency": 0, "Urgent": 1, "Normal": 2}
+        waiting = frappe.get_all("Queue Entry",
+            filters={"status": "Waiting", "department": department},
+            fields=["name", "token_number", "priority", "patient"],
+            order_by="enqueued_at asc"
+        )
+        if not waiting:
+            return {"success": False, "message": "No patients waiting"}
+        waiting = sorted(waiting, key=lambda x: priority_order.get(x.get("priority"), 3))
+        entry = frappe.get_doc("Queue Entry", waiting[0].name)
+
+    entry.status = "Called"
+    entry.called_at = frappe.utils.now()
+    entry.counter = counter
+    entry.save(ignore_permissions=True)
+    frappe.db.commit()
+
+    return {
+        "success": True,
+        "token": entry.token_number,
+        "patient": entry.patient,
+        "department": entry.department,
+        "message": f"Called {entry.token_number}"
+    }
