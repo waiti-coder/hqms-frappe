@@ -88,13 +88,24 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-12 14:15:34.619600",
+ "modified": "2026-04-12 14:25:42.077279",
  "modified_by": "Administrator",
  "module": "hqs",
  "name": "Patient Visit",
  "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Receptionist",
+   "share": 1,
+   "write": 1
+  },
   {
    "create": 1,
    "delete": 1,

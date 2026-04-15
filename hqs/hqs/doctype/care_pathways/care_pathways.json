@@ -32,13 +32,22 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-12 14:23:10.310392",
+ "modified": "2026-04-12 14:25:42.357597",
  "modified_by": "Administrator",
  "module": "hqs",
  "name": "Care Pathways",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Receptionist",
+   "share": 1
+  },
   {
    "create": 1,
    "delete": 1,

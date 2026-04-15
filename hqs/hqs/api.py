@@ -123,3 +123,27 @@ def call_next_patient(department: str, counter: str, queue_entry: str = None):
         "department": entry.department,
         "message": f"Called {entry.token_number}"
     }
+
+
+@frappe.whitelist()
+def mark_done_and_next(queue_entry: str):
+    entry = frappe.get_doc("Queue Entry", queue_entry)
+
+    if entry.status not in ["Called", "Serving"]:
+        return {"success": False, "message": "Patient is not being served"}
+
+    entry.served_at = frappe.utils.now()
+    entry.status = "Done"
+    entry.save(ignore_permissions=True)
+    frappe.db.commit()
+
+    if entry.care_pathway:
+        return {
+            "success": True,
+            "message": f"{entry.token_number} marked Done — moving to next department"
+        }
+    else:
+        return {
+            "success": True,
+            "message": f"{entry.token_number} marked Done"
+        }

@@ -1,14 +1,9 @@
 {
  "app": "hqs",
  "charts": [],
- "content": "[{\"id\":\"W2cMixWKi6\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"Reception Dashboard\",\"col\":12}},{\"id\":\"FeajFwkpSM\",\"type\":\"card\",\"data\":{\"card_name\":\"Queue Management\",\"col\":12}},{\"id\":\"Z8fdvZ3v69\",\"type\":\"card\",\"data\":{\"card_name\":\"Patient\",\"col\":12}}]",
+ "content": "[{\"id\":\"9_eK4DVMxc\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"pATIENT WAITING\",\"col\":4}},{\"id\":\"afHvXCiEQc\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Served \",\"col\":4}},{\"id\":\"FeajFwkpSM\",\"type\":\"card\",\"data\":{\"card_name\":\"Queue Management\",\"col\":12}},{\"id\":\"Z8fdvZ3v69\",\"type\":\"card\",\"data\":{\"card_name\":\"Patient\",\"col\":12}}]",
  "creation": "2026-04-13 08:48:36.235730",
- "custom_blocks": [
-  {
-   "custom_block_name": "Reception Dashboard",
-   "label": "Reception Dashboard"
-  }
- ],
+ "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
  "hide_custom": 0,
@@ -99,11 +94,20 @@
    "type": "Link"
   }
  ],
- "modified": "2026-04-13 09:28:27.739305",
- "modified_by": "Administrator",
+ "modified": "2026-04-16 02:06:28.221998",
+ "modified_by": "waitituedwin57@gmail.com",
  "module": "hqs",
  "name": "Reception",
- "number_cards": [],
+ "number_cards": [
+  {
+   "label": "pATIENT WAITING",
+   "number_card_name": "Patient Waiting"
+  },
+  {
+   "label": "Served ",
+   "number_card_name": "Patient served"
+  }
+ ],
  "owner": "Administrator",
  "public": 1,
  "quick_lists": [],

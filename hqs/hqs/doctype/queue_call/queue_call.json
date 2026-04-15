@@ -73,12 +73,24 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-04-11 18:10:20.014761",
+ "modified": "2026-04-12 07:34:06.683535",
  "modified_by": "Administrator",
- "module": "HQS",
+ "module": "hqs",
  "name": "Queue Call",
  "owner": "waitituedwin57@gmail.com",
  "permissions": [
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Receptionist",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
   {
    "create": 1,
    "delete": 1,
