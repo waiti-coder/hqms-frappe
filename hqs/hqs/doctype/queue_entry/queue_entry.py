@@ -3,6 +3,31 @@ from frappe.model.document import Document
 
 
 class QueueEntry(Document):
+    # begin: auto-generated types
+    # This code is auto-generated. Do not modify anything in this block.
+
+    from typing import TYPE_CHECKING
+
+    if TYPE_CHECKING:
+        from frappe.types import DF
+
+        appoinment: DF.Link | None
+        called_at: DF.Datetime | None
+        care_pathway: DF.Link | None
+        counter: DF.Link | None
+        current_step: DF.Int
+        department: DF.Link
+        enqueued_at: DF.Datetime | None
+        name: DF.Int | None
+        next_department: DF.Link | None
+        notes: DF.SmallText | None
+        patient: DF.Link
+        patient_name: DF.Data | None
+        priority: DF.Literal["Normal", "Urgent", "Emergency"]
+        served_at: DF.Datetime | None
+        status: DF.Literal["Waiting", "Called", "Serving", "Done", "No Show"]
+        token_number: DF.Data | None
+    # end: auto-generated types
 
     def before_insert(self):
         self.enqueued_at = frappe.utils.now()

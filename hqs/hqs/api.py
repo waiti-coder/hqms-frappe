@@ -118,6 +118,7 @@ def call_next_patient(department: str, counter: str, queue_entry: str = None):
 
     return {
         "success": True,
+        "queue_entry": entry.name,       # ← added: lets JS open the form automatically
         "token": entry.token_number,
         "patient": entry.patient,
         "department": entry.department,
@@ -140,10 +141,32 @@ def mark_done_and_next(queue_entry: str):
     if entry.care_pathway:
         return {
             "success": True,
-            "message": f"{entry.token_number} marked Done — moving to next department"
+            "message": f"{entry.token_number} marked Done — moving to {entry.care_pathway}"
         }
     else:
         return {
             "success": True,
             "message": f"{entry.token_number} marked Done"
         }
+
+
+@frappe.whitelist(allow_guest=True)
+def get_company_details():
+    company = frappe.db.get_single_value("Global Defaults", "default_company")
+    if not company:
+        companies = frappe.get_all("Company", limit=1)
+        company = companies[0].name if companies else None
+
+    if not company:
+        return {"logo": None, "color": "#2B5BA8", "name": "Hospital"}
+
+    details = frappe.db.get_value("Company", company,
+        ["company_logo", "name"],
+        as_dict=True
+    )
+
+    return {
+        "logo": details.company_logo if details else None,
+        "name": details.name if details else company,
+        "color": "#2B5BA8"
+    }
