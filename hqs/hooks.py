@@ -271,3 +271,6 @@ fixtures = [
         "filters": [["is_active", "=", 1]]
     }
 ]
+app_include_js = [
+    "/assets/hqs/js/doctor_widget.js"
+]

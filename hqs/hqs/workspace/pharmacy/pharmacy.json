@@ -1,7 +1,7 @@
 {
  "app": "hqs",
  "charts": [],
- "content": "[{\"type\":\"card\",\"data\":{\"card_name\":\"Queue Management\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Patient\",\"col\":12}}]",
+ "content": "[{\"id\":\"zFj0uQaWVY\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Patients Served Today\",\"col\":6}},{\"id\":\"K3ey-5SemS\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Patients Waiting\",\"col\":6}},{\"id\":\"gxe3N8ti6Y\",\"type\":\"card\",\"data\":{\"card_name\":\"Queue Management\",\"col\":6}},{\"id\":\"AJk1rcY6x_\",\"type\":\"card\",\"data\":{\"card_name\":\"Patient\",\"col\":6}}]",
  "creation": "2026-04-13 09:50:21.610626",
  "custom_blocks": [],
  "docstatus": 0,
@@ -74,15 +74,28 @@
    "type": "Link"
   }
  ],
- "modified": "2026-04-13 09:50:21.610626",
+ "modified": "2026-04-21 22:53:03.828791",
  "modified_by": "Administrator",
  "module": "hqs",
  "name": "Pharmacy",
- "number_cards": [],
+ "number_cards": [
+  {
+   "label": "Patients Served Today",
+   "number_card_name": "Patient Served in Pharmacy"
+  },
+  {
+   "label": "Patients Waiting",
+   "number_card_name": "Patient Waiting For Pharmacy"
+  }
+ ],
  "owner": "Administrator",
  "public": 1,
  "quick_lists": [],
- "roles": [],
+ "roles": [
+  {
+   "role": "Pharmacist"
+  }
+ ],
  "sequence_id": 0.0,
  "shortcuts": [],
  "title": "Pharmacy",

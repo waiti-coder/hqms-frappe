@@ -10,7 +10,7 @@
  "idx": 0,
  "indicator_color": "green",
  "is_hidden": 0,
- "label": "Doctor",
+ "label": "Consultation",
  "link_type": "DocType",
  "links": [
   {
@@ -84,17 +84,24 @@
    "type": "Link"
   }
  ],
- "modified": "2026-04-13 09:50:21.572565",
+ "modified": "2026-04-21 22:43:30.915913",
  "modified_by": "Administrator",
  "module": "hqs",
- "name": "Doctor",
+ "name": "Consultation",
  "number_cards": [],
  "owner": "Administrator",
  "public": 1,
  "quick_lists": [],
  "roles": [],
  "sequence_id": 0.0,
- "shortcuts": [],
- "title": "Doctor",
+ "shortcuts": [
+  {
+   "doc_view": "List",
+   "label": "Doctor",
+   "link_to": "Healthcare Practitioner",
+   "type": "DocType"
+  }
+ ],
+ "title": "Consultation",
  "type": "Workspace"
 }

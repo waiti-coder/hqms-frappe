@@ -8,7 +8,8 @@
  "field_order": [
   "counter_name",
   "department",
-  "is_active"
+  "is_active",
+  "consultation_room"
  ],
  "fields": [
   {
@@ -30,12 +31,18 @@
    "fieldname": "is_active",
    "fieldtype": "Check",
    "label": "Is Active"
+  },
+  {
+   "fieldname": "consultation_room",
+   "fieldtype": "Link",
+   "label": "Consultation Room",
+   "options": "Consultation Room"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-12 17:07:15.675359",
+ "modified": "2026-04-21 12:31:25.062959",
  "modified_by": "Administrator",
  "module": "hqs",
  "name": "Queue Counter",

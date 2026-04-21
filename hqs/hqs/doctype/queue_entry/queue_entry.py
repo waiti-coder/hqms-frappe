@@ -14,6 +14,7 @@ class QueueEntry(Document):
         appoinment: DF.Link | None
         called_at: DF.Datetime | None
         care_pathway: DF.Link | None
+        consultation_room: DF.Link | None
         counter: DF.Link | None
         current_step: DF.Int
         department: DF.Link

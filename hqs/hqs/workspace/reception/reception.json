@@ -1,7 +1,7 @@
 {
  "app": "hqs",
  "charts": [],
- "content": "[{\"id\":\"9_eK4DVMxc\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"pATIENT WAITING\",\"col\":4}},{\"id\":\"afHvXCiEQc\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Served \",\"col\":4}},{\"id\":\"FeajFwkpSM\",\"type\":\"card\",\"data\":{\"card_name\":\"Queue Management\",\"col\":12}},{\"id\":\"Z8fdvZ3v69\",\"type\":\"card\",\"data\":{\"card_name\":\"Patient\",\"col\":12}}]",
+ "content": "[{\"id\":\"9_eK4DVMxc\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"pATIENT WAITING\",\"col\":5}},{\"id\":\"afHvXCiEQc\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Served \",\"col\":7}},{\"id\":\"FeajFwkpSM\",\"type\":\"card\",\"data\":{\"card_name\":\"Queue Management\",\"col\":5}},{\"id\":\"Z8fdvZ3v69\",\"type\":\"card\",\"data\":{\"card_name\":\"Patient\",\"col\":6}}]",
  "creation": "2026-04-13 08:48:36.235730",
  "custom_blocks": [],
  "docstatus": 0,
@@ -94,8 +94,8 @@
    "type": "Link"
   }
  ],
- "modified": "2026-04-16 02:06:28.221998",
- "modified_by": "waitituedwin57@gmail.com",
+ "modified": "2026-04-21 22:42:28.763012",
+ "modified_by": "Administrator",
  "module": "hqs",
  "name": "Reception",
  "number_cards": [

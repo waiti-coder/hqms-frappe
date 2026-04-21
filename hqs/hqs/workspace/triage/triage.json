@@ -1,7 +1,7 @@
 {
  "app": "hqs",
  "charts": [],
- "content": "[{\"type\":\"card\",\"data\":{\"card_name\":\"Queue Management\",\"col\":12}},{\"type\":\"card\",\"data\":{\"card_name\":\"Patient\",\"col\":12}}]",
+ "content": "[{\"id\":\"ElGEvN4v4D\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Patients Waiting for Triage\",\"col\":5}},{\"id\":\"IwUe9-bJLg\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Patients Served Today\",\"col\":6}},{\"id\":\"UrPkG1OZ2U\",\"type\":\"card\",\"data\":{\"card_name\":\"Patient\",\"col\":6}},{\"id\":\"_KyYAfVWNo\",\"type\":\"card\",\"data\":{\"card_name\":\"Queue Management\",\"col\":5}}]",
  "creation": "2026-04-13 09:50:21.508970",
  "custom_blocks": [],
  "docstatus": 0,
@@ -74,11 +74,20 @@
    "type": "Link"
   }
  ],
- "modified": "2026-04-13 09:50:21.508970",
+ "modified": "2026-04-21 22:36:24.110510",
  "modified_by": "Administrator",
  "module": "hqs",
  "name": "Triage",
- "number_cards": [],
+ "number_cards": [
+  {
+   "label": "Patients Waiting for Triage",
+   "number_card_name": "Waititng For Triage"
+  },
+  {
+   "label": "Patients Served Today",
+   "number_card_name": "Patients Served Today"
+  }
+ ],
  "owner": "Administrator",
  "public": 1,
  "quick_lists": [],

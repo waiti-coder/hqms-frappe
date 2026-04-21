@@ -1,5 +1,6 @@
 [
  {
+  "consultation_room": null,
   "counter_name": "Triage",
   "department": "Triage",
   "docstatus": 0,
@@ -9,6 +10,7 @@
   "name": "Triage"
  },
  {
+  "consultation_room": null,
   "counter_name": "Consultation",
   "department": "Consultation",
   "docstatus": 0,
@@ -18,6 +20,7 @@
   "name": "Consultation"
  },
  {
+  "consultation_room": null,
   "counter_name": "OPD",
   "department": "OPD",
   "docstatus": 0,
@@ -27,6 +30,7 @@
   "name": "OPD"
  },
  {
+  "consultation_room": null,
   "counter_name": "Reception",
   "department": "Reception",
   "docstatus": 0,

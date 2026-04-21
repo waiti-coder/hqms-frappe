@@ -1,12 +1,6 @@
 import frappe
 from frappe.model.document import Document
 
-# Mapping reason for visit to care pathway
-PATHWAY_MAP = {
-    "General": "General Pathway",
-    "Dental": "Dental Pathway",
-    "Emergency": "Emergency Pathway"
-}
 
 class PatientVisit(Document):
 
@@ -55,20 +49,13 @@ class PatientVisit(Document):
         if self.reason_for_visit == "Emergency":
             priority = "Emergency"
 
-        # Get care pathway based on reason for visit
-        care_pathway = PATHWAY_MAP.get(self.reason_for_visit)
-
-        # Validate pathway exists
-        if care_pathway and not frappe.db.exists("Care Pathways", care_pathway):
-            care_pathway = None
-
+        # Care pathway left blank — receptionist assigns manually
         queue_entry = frappe.get_doc({
             "doctype": "Queue Entry",
             "patient": self.patient,
             "department": reception,
             "priority": priority,
             "status": "Waiting",
-            "care_pathway": care_pathway,
             "current_step": 1
         })
         queue_entry.insert(ignore_permissions=True)

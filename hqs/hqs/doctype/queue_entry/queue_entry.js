@@ -5,47 +5,52 @@ frappe.ui.form.on("Queue Entry", {
     refresh: function(frm) {
         frm.clear_custom_buttons();
 
+        // Hide consultation_room from Receptionist
+        if (frappe.user.has_role('Receptionist') && !frappe.user.has_role('System Manager')) {
+            frm.set_df_property('consultation_room', 'hidden', 1);
+        }
+
         // CALL PATIENT button — show when Waiting
         if (frm.doc.status === 'Waiting') {
             frm.add_custom_button(__('Call Patient'), function() {
-                frappe.prompt(
-                    [{
-                        label: __('Counter'),
-                        fieldname: 'counter',
-                        fieldtype: 'Link',
-                        options: 'Queue Counter',
-                        reqd: 1,
-                        get_query: () => ({
-                            filters: { department: frm.doc.department, is_active: 1 }
-                        })
-                    }],
-                    function(values) {
-                        frappe.call({
-                            method: 'hqs.hqs.api.call_next_patient',
-                            args: {
-                                department: frm.doc.department,
-                                counter: values.counter,
-                                queue_entry: frm.doc.name
-                            },
-                            callback: function(r) {
-                                if (r.message && r.message.success) {
-                                    frappe.show_alert({
-                                        message: __('Called ') + r.message.token,
-                                        indicator: 'green'
-                                    });
-                                    frm.reload_doc();
-                                } else {
-                                    frappe.show_alert({
-                                        message: r.message.message || __('Error'),
-                                        indicator: 'red'
-                                    });
-                                }
-                            }
+                // Auto-fetch active counter for this department
+                frappe.db.get_value('Queue Counter',
+                    { department: frm.doc.department, is_active: 1 },
+                    'name'
+                ).then(r => {
+                    const counter = r.message?.name;
+                    if (!counter) {
+                        frappe.msgprint({
+                            title: __('No Counter Found'),
+                            message: __('No active counter found for ') + frm.doc.department,
+                            indicator: 'red'
                         });
-                    },
-                    __('Select Counter'),
-                    __('Call Patient')
-                );
+                        return;
+                    }
+
+                    frappe.call({
+                        method: 'hqs.hqs.api.call_next_patient',
+                        args: {
+                            department: frm.doc.department,
+                            counter: counter,
+                            queue_entry: frm.doc.name
+                        },
+                        callback: function(r) {
+                            if (r.message && r.message.success) {
+                                frappe.show_alert({
+                                    message: __('Called ') + r.message.token,
+                                    indicator: 'green'
+                                });
+                                frm.reload_doc();
+                            } else {
+                                frappe.show_alert({
+                                    message: r.message.message || __('Error'),
+                                    indicator: 'red'
+                                });
+                            }
+                        }
+                    });
+                });
             }).addClass('btn-primary');
         }
 
@@ -132,15 +137,11 @@ frappe.ui.form.on("Queue Entry", {
 
 
 frappe.listview_settings['Queue Entry'] = {
-    // Use refresh instead of onload — more reliable across Frappe versions
     refresh: function(listview) {
-        // Avoid adding the button multiple times on repeated refreshes
         if (listview.call_next_added) return;
         listview.call_next_added = true;
 
-        // Add as a secondary button next to the primary "Add" button
         listview.page.add_inner_button(__('Call Next'), function() {
-
             frappe.call({
                 method: 'hqs.hqs.api.peek_next_patient',
                 args: { department: 'Reception' },
@@ -176,42 +177,49 @@ frappe.listview_settings['Queue Entry'] = {
                                             Waiting: <b>${next.waiting_since}</b>
                                         </div>
                                     </div>
-                                    <p style="color:#888;font-size:0.85rem;">Select a counter to call this patient.</p>
+                                    <p style="color:#888;font-size:0.85rem;">Counter will be auto-assigned for this department.</p>
                                 `
-                            },
-                            {
-                                label: __('Counter'),
-                                fieldname: 'counter',
-                                fieldtype: 'Link',
-                                options: 'Queue Counter',
-                                reqd: 1,
-                                get_query: () => ({ filters: { is_active: 1 } })
                             }
                         ],
                         primary_action_label: __('Call Patient'),
-                        primary_action: function(values) {
+                        primary_action: function() {
                             dialog.hide();
 
-                            frappe.call({
-                                method: 'hqs.hqs.api.call_next_patient',
-                                args: {
-                                    department: 'Reception',
-                                    counter: values.counter
-                                },
-                                callback: function(r2) {
-                                    if (r2.message && r2.message.success) {
-                                        frappe.show_alert({
-                                            message: __('Calling Token ') + r2.message.token,
-                                            indicator: 'green'
-                                        }, 4);
-                                        frappe.set_route('Form', 'Queue Entry', r2.message.queue_entry);
-                                    } else {
-                                        frappe.show_alert({
-                                            message: r2.message?.message || __('No patients waiting'),
-                                            indicator: 'red'
-                                        }, 4);
-                                    }
+                            // Auto-fetch active counter for Reception
+                            frappe.db.get_value('Queue Counter',
+                                { department: 'Reception', is_active: 1 },
+                                'name'
+                            ).then(rc => {
+                                const counter = rc.message?.name;
+                                if (!counter) {
+                                    frappe.show_alert({
+                                        message: __('No active counter found for Reception'),
+                                        indicator: 'red'
+                                    }, 4);
+                                    return;
                                 }
+
+                                frappe.call({
+                                    method: 'hqs.hqs.api.call_next_patient',
+                                    args: {
+                                        department: 'Reception',
+                                        counter: counter
+                                    },
+                                    callback: function(r2) {
+                                        if (r2.message && r2.message.success) {
+                                            frappe.show_alert({
+                                                message: __('Calling Token ') + r2.message.token,
+                                                indicator: 'green'
+                                            }, 4);
+                                            frappe.set_route('Form', 'Queue Entry', r2.message.queue_entry);
+                                        } else {
+                                            frappe.show_alert({
+                                                message: r2.message?.message || __('No patients waiting'),
+                                                indicator: 'red'
+                                            }, 4);
+                                        }
+                                    }
+                                });
                             });
                         }
                     });
