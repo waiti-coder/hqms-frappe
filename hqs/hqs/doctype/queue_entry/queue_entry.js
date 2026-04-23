@@ -85,7 +85,7 @@ frappe.ui.form.on("Queue Entry", {
                                         method: 'hqs.hqs.api.call_next_patient',
                                         args: {
                                             department: frm.doc.department,
-                                            counter: frm.doc.counter || 'Counter 1'
+                                            counter: frm.doc.counter
                                         },
                                         callback: function(r2) {
                                             if (r2.message && r2.message.success) {

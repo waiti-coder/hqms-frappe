@@ -14,13 +14,6 @@ function initTriageWidget() {
     widget.innerHTML = `
         <style>
             #triage-widget { padding: 20px 0; font-family: 'Segoe UI', sans-serif; }
-            .tw-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px; }
-            .tw-stat { background: white; border-radius: 12px; padding: 16px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 4px solid #2B5BA8; }
-            .tw-stat.green  { border-color: #6AAC2B; }
-            .tw-stat.orange { border-color: #E65100; }
-            .tw-stat.grey   { border-color: #aaa; }
-            .tw-stat-value  { font-size: 2rem; font-weight: 900; color: #222; line-height: 1; }
-            .tw-stat-label  { font-size: 0.72rem; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
             .tw-section-title { font-size: 1rem; font-weight: 700; color: #333; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
             .tw-updated { font-size: 0.72rem; color: #aaa; font-weight: 400; }
             .tw-doctor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
@@ -37,26 +30,6 @@ function initTriageWidget() {
             .tw-no-data { color: #bbb; font-size: 0.9rem; padding: 20px 0; }
         </style>
 
-        <!-- STATS ROW -->
-        <div class="tw-stats">
-            <div class="tw-stat orange">
-                <div class="tw-stat-value" id="tw-waiting-reception">--</div>
-                <div class="tw-stat-label">Waiting at Reception</div>
-            </div>
-            <div class="tw-stat">
-                <div class="tw-stat-value" id="tw-waiting-triage">--</div>
-                <div class="tw-stat-label">Queued for Triage</div>
-            </div>
-            <div class="tw-stat green">
-                <div class="tw-stat-value" id="tw-served">--</div>
-                <div class="tw-stat-label">Served Today</div>
-            </div>
-            <div class="tw-stat grey">
-                <div class="tw-stat-value" id="tw-avg">--</div>
-                <div class="tw-stat-label">Avg Wait (min)</div>
-            </div>
-        </div>
-
         <!-- DOCTORS ON DUTY -->
         <div class="tw-section-title">
             Doctors ON Duty
@@ -70,29 +43,8 @@ function initTriageWidget() {
     const layout = document.querySelector('.layout-main-section');
     if (layout) layout.prepend(widget);
 
-    loadTriageStats();
     loadDoctors();
-    setInterval(loadTriageStats, 15000);
     setInterval(loadDoctors, 30000);
-}
-
-function loadTriageStats() {
-    // Use frappe.call for all stats — more reliable in Frappe 17
-    frappe.call({
-        method: 'hqs.hqs.api.get_triage_stats',
-        callback: function(r) {
-            if (!r.message) return;
-            const m = r.message;
-            const set = (id, val) => {
-                const el = document.getElementById(id);
-                if (el) el.textContent = val ?? '--';
-            };
-            set('tw-waiting-reception', m.waiting_reception);
-            set('tw-waiting-triage', m.waiting_triage);
-            set('tw-served', m.served);
-            set('tw-avg', m.avg_time);
-        }
-    });
 }
 
 function loadDoctors() {

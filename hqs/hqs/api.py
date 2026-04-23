@@ -175,18 +175,27 @@ def mark_done_and_next(queue_entry: str):
     entry.served_at = frappe.utils.now()
     entry.status = "Done"
     entry.save(ignore_permissions=True)
+
+    # ✅ Create new Queue Entry in the next department
+    if entry.next_department:
+        new_entry = frappe.get_doc({
+            "doctype": "Queue Entry",
+            "patient": entry.patient,
+            "patient_name": entry.patient_name,
+            "department": entry.next_department,
+            "priority": entry.priority,
+            "status": "Waiting",
+            "enqueued_at": frappe.utils.now(),
+            "current_step": (entry.current_step or 1) + 1
+        })
+        new_entry.insert(ignore_permissions=True)
+
     frappe.db.commit()
 
-    if entry.care_pathway:
-        return {
-            "success": True,
-            "message": f"{entry.token_number} marked Done — moving to {entry.care_pathway}"
-        }
-    else:
-        return {
-            "success": True,
-            "message": f"{entry.token_number} marked Done"
-        }
+    return {
+        "success": True,
+        "message": f"{entry.token_number} marked Done — moving to {entry.next_department or entry.care_pathway or 'next department'}"
+    }
 
 
 @frappe.whitelist(allow_guest=True)
