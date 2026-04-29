@@ -19,6 +19,7 @@ class QueueEntry(Document):
         name: DF.Int | None
         next_room: DF.Link | None
         patient: DF.Link
+        phone_numberid: DF.Data | None
         priority: DF.Literal["Normal", "Urgent", "Emergency"]
         room: DF.Link
         served_at: DF.Datetime | None

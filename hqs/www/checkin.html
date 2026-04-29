@@ -3,69 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Self Check-in Kiosk</title>
+    <title>South B Hospital - Self Check-in</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root { --blue: #2B5BA8; --green: #6AAC2B; --light-blue: #EEF3FB; --light-green: #F2F9EA; }
-        body { background: #f4f6f9; font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
 
-        /* ── Header ── */
-        header { background: white; padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid var(--green); }
-        .logo-wrap { display: flex; align-items: center; gap: 14px; }
-        .org-logo { max-height: 60px; max-width: 160px; object-fit: contain; display: none; }
-        .kiosk-title { font-size: 1.4rem; font-weight: 800; color: var(--blue); }
-        .header-right #clock { font-size: 1.8rem; font-weight: 700; color: var(--blue); text-align: right; }
-        .header-right #date  { font-size: 0.85rem; color: #888; text-align: right; }
-
-        /* ── Main ── */
-        .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
-        .card { background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 5px solid var(--blue); width: 100%; max-width: 600px; }
-        .card h2 { color: var(--blue); font-size: 1.8rem; margin-bottom: 8px; text-align: center; }
-        .card > .subtitle { color: #888; margin-bottom: 30px; font-size: 1rem; text-align: center; }
-
-        /* ── Form ── */
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-size: 1rem; font-weight: 600; color: #444; margin-bottom: 8px; }
-        input[type="tel"], input[type="text"] {
-            width: 100%; padding: 16px; font-size: 1.2rem;
-            border: 2px solid #ddd; border-radius: 10px; outline: none;
-            transition: border 0.2s; font-family: 'Segoe UI', sans-serif;
+        :root {
+            --blue: #2B5BA8;
+            --green: #6AAC2B;
+            --light-blue: #EEF3FB;
+            --light-green: #F2F9EA;
         }
+
+        body {
+            background: #f4f6f9;
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: white;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--green);
+        }
+
+        .logo-south { font-size: 2rem; font-weight: 900; color: var(--blue); letter-spacing: 2px; }
+        .logo-south span { color: var(--green); }
+        .logo-hospital { font-size: 1rem; font-weight: 700; color: var(--green); letter-spacing: 4px; }
+        .logo-tagline { font-size: 0.8rem; color: #999; font-style: italic; }
+
+        .header-right #clock { font-size: 1.8rem; font-weight: 700; color: var(--blue); text-align: right; }
+        .header-right #date { font-size: 0.85rem; color: #888; text-align: right; }
+
+        .main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .screen { display: none; width: 100%; max-width: 600px; }
+        .screen.active { display: block; }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 5px solid var(--blue);
+        }
+
+        .card h2 { color: var(--blue); font-size: 1.8rem; margin-bottom: 8px; }
+        .card p { color: #888; margin-bottom: 30px; font-size: 1rem; }
+
+        .form-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        input[type="tel"],
+        input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            transition: border 0.2s;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
         input:focus { border-color: var(--blue); }
-        .btn { width: 100%; padding: 18px; font-size: 1.2rem; font-weight: 700; border: none; border-radius: 10px; cursor: pointer; margin-top: 10px; transition: all 0.2s; }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
         .btn-primary { background: var(--blue); color: white; }
         .btn-primary:hover { background: #1e4a8f; }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        /* ── Returning patient banner ── */
-        .returning-banner { background: var(--light-blue); border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; border-left: 4px solid var(--blue); display: none; }
-        .returning-banner .name  { font-size: 1.2rem; font-weight: 700; color: var(--blue); }
-        .returning-banner .label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .returning-banner {
+            background: var(--light-green);
+            border-radius: 10px;
+            padding: 14px 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--green);
+            font-size: 1rem;
+            color: var(--green);
+            font-weight: 600;
+            display: none;
+        }
 
-        /* ── Errors ── */
+        .token-display { text-align: center; padding: 20px 0; }
+        .token-display .token-num { font-size: 5rem; font-weight: 900; color: var(--green); line-height: 1; }
+        .token-display .token-label { font-size: 1rem; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .token-display .message { font-size: 1.1rem; color: #555; margin-top: 16px; line-height: 1.6; }
+        .token-display .dept { display: inline-block; background: var(--light-green); color: var(--green); border: 1px solid var(--green); padding: 6px 20px; border-radius: 20px; font-weight: 700; margin-top: 12px; }
+
+        .checkmark { width: 80px; height: 80px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 2.5rem; color: white; }
+
         .error-msg { color: #c62828; font-size: 0.9rem; margin-top: 8px; display: none; }
 
-        /* ── Token screen ── */
-        .token-screen { display: none; text-align: center; padding: 20px 0; }
-        .token-screen.active { display: block; }
-        .checkin-form.hidden { display: none; }
-        .checkmark { width: 80px; height: 80px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 2.5rem; color: white; }
-        .token-label { font-size: 1rem; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
-        .token-num   { font-size: 5rem; font-weight: 900; color: var(--green); line-height: 1; }
-        .token-message { font-size: 1.1rem; color: #555; margin-top: 16px; line-height: 1.6; }
-        .room-badge { display: inline-block; background: var(--light-green); color: var(--green); border: 1px solid var(--green); padding: 6px 20px; border-radius: 20px; font-weight: 700; margin-top: 12px; }
-        .print-btn { margin-top: 20px; padding: 12px 30px; background: var(--blue); color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; display: none; }
-        .print-btn:hover { background: #1e4a8f; }
-
-        /* ── Footer ── */
-        footer { background: white; border-top: 3px solid var(--blue); padding: 12px 40px; text-align: center; font-size: 0.8rem; color: #888; }
+        footer {
+            background: white;
+            border-top: 3px solid var(--blue);
+            padding: 12px 40px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #888;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo-wrap">
-        <img id="org-logo" class="org-logo" src="" alt="" />
-        <div class="kiosk-title" id="kiosk-title">Self Check-in</div>
+    <div>
+        <div class="logo-south">SOUTH <span>+B</span></div>
+        <div class="logo-hospital">H O S P I T A L</div>
+        <div class="logo-tagline">we care</div>
     </div>
     <div class="header-right">
         <div id="clock">--:--:--</div>
@@ -74,88 +148,64 @@
 </header>
 
 <div class="main">
-    <div class="card">
 
-        <!-- CHECK-IN FORM -->
-        <div class="checkin-form" id="checkin-form">
+    <!-- SCREEN 1: Phone + Name on same page -->
+    <div class="screen active" id="screen-checkin">
+        <div class="card">
             <h2>Welcome</h2>
-            <p class="subtitle">Please fill in your details to check in</p>
+            <p>Please enter your details to check in</p>
 
+            <!-- Shows when returning patient is found -->
             <div class="returning-banner" id="returning-banner">
-                <div class="label">Welcome Back</div>
-                <div class="name" id="returning-name"></div>
+                👋 Welcome back!
             </div>
 
             <div class="form-group">
-                <label>Phone Number</label>
-                <input type="tel" id="phone-input" placeholder="e.g. 0712 345 678" maxlength="15"
-                    oninput="onPhoneInput(this.value)" />
-                <div class="error-msg" id="phone-error">Please enter a valid phone number</div>
+                <label>Phone Number / ID</label>
+                <input type="tel" id="phone-input" placeholder="e.g. 0712 345 678"
+                    maxlength="20" oninput="onPhoneInput()" />
+                <div class="error-msg" id="phone-error">Please enter a valid phone number or ID</div>
             </div>
 
-            <div class="form-group" id="name-group">
+            <div class="form-group">
                 <label>Full Name</label>
                 <input type="text" id="name-input" placeholder="Enter your full name" />
                 <div class="error-msg" id="name-error">Please enter your full name</div>
             </div>
 
-            <button class="btn btn-primary" onclick="submitCheckin()">Check In</button>
+            <button class="btn btn-primary" id="checkin-btn" onclick="submitCheckin()">Check In</button>
         </div>
-
-        <!-- TOKEN SCREEN -->
-        <div class="token-screen" id="token-screen">
-            <div class="checkmark">✓</div>
-            <div class="token-label">Your Queue Number</div>
-            <div class="token-num" id="token-display"></div>
-            <div class="token-message">
-                Please proceed to<br>
-                <span class="room-badge" id="room-display">Reception</span>
-            </div>
-            <button class="print-btn" id="print-btn" onclick="triggerPrint()">🖨 Print Ticket</button>
-            <p style="margin-top:20px;color:#aaa;font-size:0.9rem;">
-                This screen will reset in <span id="countdown">10</span> seconds
-            </p>
-        </div>
-
     </div>
+
+    <!-- SCREEN 2: Token -->
+    <div class="screen" id="screen-token">
+        <div class="card">
+            <div class="token-display">
+                <div class="checkmark">✓</div>
+                <div class="token-label">Your Token Number</div>
+                <div class="token-num" id="token-display"></div>
+                <div class="message">
+                    Please proceed to <br>
+                    <span class="dept" id="room-display">Reception</span>
+                </div>
+                <p style="margin-top:20px; color:#aaa; font-size:0.9rem;">
+                    This screen will reset in <span id="countdown">10</span> seconds
+                </p>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<footer id="main-footer">Self Check-in Kiosk &nbsp;|&nbsp; For assistance please speak to our staff</footer>
+<footer>
+    South B Hospital — Self Check-in Kiosk &nbsp;|&nbsp; For assistance please speak to our staff
+</footer>
 
 <script>
-    let currentPhone   = '';
-    let isReturning    = false;
-    let phoneCheckTimer = null;
-    let countdownTimer  = null;
-    let qmsSettings    = {};           // Cached QMS settings
-    let lastToken      = '';
-    let lastRoom       = '';
+    let countdownTimer = null;
+    let lookupTimer = null;
 
-    // ── Load QMS Settings on boot ──
-    fetch('/api/method/hqs.hqs.api.get_qms_settings', { credentials: 'include' })
-        .then(res => res.json())
-        .then(data => {
-            if (!data.message) return;
-            qmsSettings = data.message;
-
-            if (qmsSettings.kiosk_title) {
-                document.getElementById('kiosk-title').textContent = qmsSettings.kiosk_title;
-                document.title = qmsSettings.kiosk_title;
-            }
-
-            if (qmsSettings.logo) {
-                const logo = document.getElementById('org-logo');
-                logo.src = qmsSettings.logo;
-                logo.style.display = 'block';
-            }
-
-            if (qmsSettings.enable_printing) {
-                document.getElementById('print-btn').style.display = 'inline-block';
-            }
-        })
-        .catch(() => {});
-
-    // ── Clock ──
+    // ── CLOCK ──
     function updateClock() {
         const now = new Date();
         document.getElementById('clock').textContent = now.toLocaleTimeString();
@@ -166,157 +216,134 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // ── Phone input — check returning patient ──
-    function onPhoneInput(value) {
-        clearTimeout(phoneCheckTimer);
-        const banner    = document.getElementById('returning-banner');
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    // ── GET CSRF TOKEN ──
+    // Use frappe.csrf_token from cookie — most reliable method
+    function getCsrfToken() {
+        const match = document.cookie.match(/csrf_token=([^;]+)/);
+        return match ? match[1] : 'fetch';
+    }
+
+    // ── AUTO-LOOKUP PATIENT AS THEY TYPE ──
+    function onPhoneInput() {
+        const phone = document.getElementById('phone-input').value.trim();
+        const banner = document.getElementById('returning-banner');
         const nameInput = document.getElementById('name-input');
 
-        isReturning = false;
         banner.style.display = 'none';
-        nameInput.value = '';
-        nameInput.readOnly = false;
 
-        if (value.length >= 9) {
-            phoneCheckTimer = setTimeout(() => {
-                fetch('/api/method/hqs.hqs.api.check_patient?phone=' + encodeURIComponent(value), {
-                    method: 'GET', credentials: 'include'
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.message && data.message.exists) {
-                        isReturning = true;
-                        currentPhone = value;
-                        document.getElementById('returning-name').textContent = data.message.name;
-                        nameInput.value = data.message.name;
-                        nameInput.readOnly = true;
-                        banner.style.display = 'block';
-                    }
-                })
-                .catch(() => {});
-            }, 600);
-        }
-    }
+        if (lookupTimer) clearTimeout(lookupTimer);
+        if (phone.length < 9) return;
 
-    // ── Submit check-in ──
-    function submitCheckin() {
-        const phone    = document.getElementById('phone-input').value.trim();
-        const name     = document.getElementById('name-input').value.trim();
-        const phoneErr = document.getElementById('phone-error');
-        const nameErr  = document.getElementById('name-error');
-
-        let valid = true;
-        if (!phone || phone.length < 9) { phoneErr.style.display = 'block'; valid = false; }
-        else { phoneErr.style.display = 'none'; }
-        if (!name) { nameErr.style.display = 'block'; valid = false; }
-        else { nameErr.style.display = 'none'; }
-        if (!valid) return;
-
-        const url = '/api/method/hqs.hqs.api.create_patient_visit'
-            + '?phone='             + encodeURIComponent(phone)
-            + '&full_name='         + encodeURIComponent(name)
-            + '&reason_for_visit='  + encodeURIComponent('General');
-
-        fetch(url, { method: 'GET', credentials: 'include' })
-            .then(res => res.json())
+        lookupTimer = setTimeout(() => {
+            fetch('/api/method/hqs.hqs.api.check_patient?phone=' + encodeURIComponent(phone), {
+                credentials: 'include'
+            })
+            .then(r => r.json())
             .then(data => {
-                if (data.message && data.message.token) {
-                    lastToken = data.message.token;
-                    lastRoom  = data.message.room || 'Reception';
-
-                    document.getElementById('token-display').textContent = lastToken;
-                    document.getElementById('room-display').textContent  = lastRoom;
-                    document.getElementById('checkin-form').classList.add('hidden');
-                    document.getElementById('token-screen').classList.add('active');
-
-                    // Auto-print if printing is enabled
-                    if (qmsSettings.enable_printing) {
-                        setTimeout(() => printTicket(lastToken, lastRoom), 400);
-                    }
-
-                    startCountdown();
-                } else {
-                    alert('Something went wrong. Please try again or speak to staff.');
+                if (data.message && data.message.exists) {
+                    nameInput.value = data.message.name;
+                    banner.style.display = 'block';
                 }
             })
-            .catch(() => alert('Connection error. Please try again.'));
+            .catch(() => {});
+        }, 600);
     }
 
-    // ── Print ticket ──
-    function triggerPrint() {
-        printTicket(lastToken, lastRoom);
-    }
+    // ── SUBMIT CHECK-IN ──
+    function submitCheckin() {
+        const phone = document.getElementById('phone-input').value.trim();
+        const name = document.getElementById('name-input').value.trim();
+        const phoneErr = document.getElementById('phone-error');
+        const nameErr = document.getElementById('name-error');
 
-    function printTicket(token, roomName) {
-        const s   = qmsSettings;
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('en-KE', {
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        let valid = true;
+        if (!phone || phone.length < 9) {
+            phoneErr.style.display = 'block';
+            valid = false;
+        } else {
+            phoneErr.style.display = 'none';
+        }
+
+        if (!name) {
+            nameErr.style.display = 'block';
+            valid = false;
+        } else {
+            nameErr.style.display = 'none';
+        }
+
+        if (!valid) return;
+
+        const btn = document.getElementById('checkin-btn');
+        btn.disabled = true;
+        btn.textContent = 'Please wait...';
+
+        // Use GET request to avoid CSRF issues on guest pages
+        const params = new URLSearchParams({
+            phone: phone,
+            full_name: name,
+            reason_for_visit: ''
         });
-        const timeStr = now.toLocaleTimeString();
 
-        const printWindow = window.open('', '_blank', 'width=320,height=550');
-        printWindow.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    @page { margin: 0; }
-                    body {
-                        font-family: 'Courier New', monospace;
-                        width: 280px; margin: 0 auto;
-                        padding: 12px; text-align: center;
-                    }
-                    .logo { max-width: 120px; max-height: 60px; margin-bottom: 8px; }
-                    .org  { font-size: 1.05rem; font-weight: 700; margin-bottom: 2px; }
-                    .dash { border-top: 1px dashed #000; margin: 8px 0; }
-                    .lbl  { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; }
-                    .tok  { font-size: 3.8rem; font-weight: 900; line-height: 1; margin: 4px 0; }
-                    .rm   { font-size: 0.9rem; margin: 8px 0; }
-                    .dt   { font-size: 0.7rem; color: #444; margin-top: 6px; }
-                    .ft   { font-size: 0.75rem; margin-top: 10px; font-style: italic; }
-                </style>
-            </head>
-            <body onload="window.print();window.close();">
-                ${s.logo ? `<img class="logo" src="${s.logo}" />` : ''}
-                <div class="org">${s.receipt_header || s.organization_name || 'Hospital'}</div>
-                <div class="dash"></div>
-                <div class="lbl">Your Queue Number</div>
-                <div class="tok">${token}</div>
-                <div class="rm">Please proceed to:<br><b>${roomName}</b></div>
-                <div class="dash"></div>
-                <div class="dt">${dateStr}<br>${timeStr}</div>
-                <div class="dash"></div>
-                <div class="ft">${s.receipt_footer || 'Thank You'}</div>
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
+        fetch('/api/method/hqs.hqs.api.create_patient_visit?' + params.toString(), {
+            method: 'GET',
+            credentials: 'include'
+        })
+        .then(res => res.json())
+        .then(data => {
+            btn.disabled = false;
+            btn.textContent = 'Check In';
+
+            if (data.message && data.message.token) {
+                document.getElementById('token-display').textContent = data.message.token;
+                document.getElementById('room-display').textContent = data.message.room || 'Reception';
+                showScreen('screen-token');
+                startCountdown();
+            } else {
+                alert('Something went wrong. Please try again or speak to staff.');
+            }
+        })
+        .catch(() => {
+            btn.disabled = false;
+            btn.textContent = 'Check In';
+            alert('Connection error. Please try again.');
+        });
     }
 
-    // ── Countdown then reset ──
+    // ── COUNTDOWN ──
     function startCountdown() {
         let count = 10;
         document.getElementById('countdown').textContent = count;
+        if (countdownTimer) clearInterval(countdownTimer);
         countdownTimer = setInterval(() => {
             count--;
             document.getElementById('countdown').textContent = count;
-            if (count <= 0) { clearInterval(countdownTimer); resetKiosk(); }
+            if (count <= 0) {
+                clearInterval(countdownTimer);
+                resetKiosk();
+            }
         }, 1000);
     }
 
     function resetKiosk() {
-        currentPhone = '';
-        isReturning  = false;
-        lastToken    = '';
-        lastRoom     = '';
-        document.getElementById('phone-input').value   = '';
-        document.getElementById('name-input').value    = '';
-        document.getElementById('name-input').readOnly = false;
+        document.getElementById('phone-input').value = '';
+        document.getElementById('name-input').value = '';
         document.getElementById('returning-banner').style.display = 'none';
-        document.getElementById('checkin-form').classList.remove('hidden');
-        document.getElementById('token-screen').classList.remove('active');
+        showScreen('screen-checkin');
     }
+
+    // ── ENTER KEY ──
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const active = document.querySelector('.screen.active');
+            if (active.id === 'screen-checkin') submitCheckin();
+        }
+    });
 </script>
+
 </body>
 </html>

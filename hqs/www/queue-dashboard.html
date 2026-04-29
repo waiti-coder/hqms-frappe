@@ -73,8 +73,10 @@
             text-transform: uppercase;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
         }
+
+        .live-left { display: flex; align-items: center; gap: 10px; }
 
         .blink {
             display: inline-block;
@@ -89,6 +91,22 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
+
+        .audio-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: background 0.2s;
+        }
+
+        .audio-btn:hover { background: rgba(255,255,255,0.3); }
+        .audio-btn.active { background: var(--green); border-color: var(--green); }
 
         .main { flex: 1; padding: 20px 30px; }
 
@@ -112,7 +130,6 @@
             padding: 12px 18px;
         }
 
-        /* Counter name only — no room shown */
         .counter-name { font-size: 1.1rem; font-weight: 700; }
 
         .counter-body { padding: 16px 18px; }
@@ -196,8 +213,11 @@
 </header>
 
 <div class="live-banner">
-    <span class="blink"></span>
-    Queue Management System — Live View
+    <div class="live-left">
+        <span class="blink"></span>
+        Queue Management System — Live View
+    </div>
+    <button class="audio-btn" id="audio-btn" onclick="toggleAudio()">🔇 Audio Off</button>
 </div>
 
 <div class="main">
@@ -223,21 +243,71 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // ── LOAD LOGO AND NAME FROM QMS SETTINGS ──
+    // ── AUDIO ──
+    let _soundEnabled = false;
+    let _lastServing = new Set();
+
+    function toggleAudio() {
+        _soundEnabled = !_soundEnabled;
+        const btn = document.getElementById('audio-btn');
+        btn.textContent = _soundEnabled ? '🔊 Audio On' : '🔇 Audio Off';
+        btn.classList.toggle('active', _soundEnabled);
+
+        // Speak a test phrase so browser unlocks audio
+        if (_soundEnabled && 'speechSynthesis' in window) {
+            const test = new SpeechSynthesisUtterance('Audio enabled');
+            test.volume = 0.1;
+            window.speechSynthesis.speak(test);
+        }
+    }
+
+    function announceToken(token, counterName) {
+        if (!_soundEnabled) return;
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const text = `Token ${token.split('').join(' ')}, please proceed to ${counterName}`;
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.rate = 0.85;
+        msg.pitch = 1;
+        msg.volume = 1;
+        window.speechSynthesis.speak(msg);
+    }
+
+    function checkNewlyServing(serving) {
+        serving.forEach(s => {
+            const key = s.token_number + '_' + (s.counter || s.room);
+            if (!_lastServing.has(key)) {
+                announceToken(s.token_number, s.counter || s.room || 'the counter');
+            }
+        });
+        _lastServing = new Set(serving.map(s => s.token_number + '_' + (s.counter || s.room)));
+    }
+
+    // ── LOAD SETTINGS ──
     fetch('/api/method/hqs.hqs.api.get_qms_settings')
         .then(r => r.json())
         .then(d => {
             if (!d.message) return;
             const s = d.message;
+
             if (s.organization_name) {
                 document.getElementById('org-name').textContent = s.organization_name;
                 document.getElementById('footer-name').textContent = s.organization_name + ' — Queue Management System';
                 document.title = s.organization_name + ' — Queue System';
             }
+
             if (s.logo) {
                 const img = document.getElementById('org-logo');
                 img.src = s.logo;
                 img.style.display = 'block';
+            }
+
+            // Auto-enable audio if set in settings
+            if (s.enable_sound && !_soundEnabled) {
+                _soundEnabled = true;
+                const btn = document.getElementById('audio-btn');
+                btn.textContent = '🔊 Audio On';
+                btn.classList.add('active');
             }
         })
         .catch(() => {});
@@ -254,6 +324,9 @@
 
     // ── RENDER — counter name only, no room shown ──
     function renderCounters({ counters, serving, waiting }) {
+        // Check for newly called tokens and announce them
+        checkNewlyServing(serving);
+
         const grid = document.getElementById('counters-grid');
 
         if (!counters || counters.length === 0) {
@@ -265,7 +338,7 @@
             // Match serving by counter name
             const current = serving.find(s => s.counter === counter.counter_name);
 
-            // Match waiting by room (internal — not shown to patient)
+            // Match waiting by room — internal only, not shown to patient
             const roomWaiting = waiting.filter(w => w.room === counter.room);
 
             const nowServingHTML = current ? `
