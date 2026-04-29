@@ -10,10 +10,11 @@ class QueueCounter(Document):
     if TYPE_CHECKING:
         from frappe.types import DF
 
-        consultation_room: DF.Link | None
+        assigned_user: DF.Link | None
         counter_name: DF.Data
-        department: DF.Link | None
+        display_order: DF.Int
         is_active: DF.Check
+        room: DF.Link | None
     # end: auto-generated types
 
     pass

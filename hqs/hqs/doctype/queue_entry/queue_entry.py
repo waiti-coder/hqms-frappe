@@ -11,20 +11,16 @@ class QueueEntry(Document):
     if TYPE_CHECKING:
         from frappe.types import DF
 
-        appoinment: DF.Link | None
         called_at: DF.Datetime | None
         care_pathway: DF.Link | None
-        consultation_room: DF.Link | None
         counter: DF.Link | None
         current_step: DF.Int
-        department: DF.Link
         enqueued_at: DF.Datetime | None
         name: DF.Int | None
-        next_department: DF.Link | None
-        notes: DF.SmallText | None
+        next_room: DF.Link | None
         patient: DF.Link
-        patient_name: DF.Data | None
         priority: DF.Literal["Normal", "Urgent", "Emergency"]
+        room: DF.Link
         served_at: DF.Datetime | None
         status: DF.Literal["Waiting", "Called", "Serving", "Done", "No Show"]
         token_number: DF.Data | None
@@ -37,55 +33,52 @@ class QueueEntry(Document):
 
     def _generate_token(self) -> str:
         today = frappe.utils.today()
+
+        # Pull prefix from QMS Setting
+        prefix = frappe.db.get_single_value("QMS Setting", "token_prefix") or "T"
+
         count = frappe.db.count("Queue Entry", filters={
             "creation": [">=", today]
         })
-        return f"T-{str(count + 1).zfill(3)}"
+        return f"{prefix}-{str(count + 1).zfill(3)}"
 
     def on_update(self):
-        if self.status == "Done":
-            self._enqueue_next_department()
+        pass  # Routing is now handled manually by clerk via send_to_next_room
 
-    def _enqueue_next_department(self):
-        if not self.care_pathway:
-            return
 
-        steps = frappe.get_all(
-            "Care Path Steps",
-            filters={"parent": self.care_pathway},
-            fields=["department", "order"],
-            order_by="order asc"
-        )
+# ---------------------------------------------------------------------------
+# PERMISSION QUERY — controls what each user sees in Queue Entry list/form
+# ---------------------------------------------------------------------------
 
-        if not steps:
-            return
+def get_permission_query_conditions(user):
+    """
+    This function runs automatically every time anyone opens
+    the Queue Entry list or form. It silently adds a WHERE
+    clause to the database query so users only see their room.
 
-        current_step = self.current_step or 0
-        next_steps = [s for s in steps if s.order > current_step]
+    The logic is simple:
+        1. System Manager  → sees everything
+        2. Everyone else   → find their Queue Counter → get the room → filter by that room
+        3. No counter found → sees nothing
+    """
+    if not user:
+        user = frappe.session.user
 
-        if not next_steps:
-            frappe.msgprint(
-                f"Patient {self.patient} has completed all steps in the pathway.",
-                alert=True
-            )
-            return
+    # System Manager sees everything — no filter applied
+    if "System Manager" in frappe.get_roles(user):
+        return ""
 
-        next_step = next_steps[0]
+    # Find which counter this user is assigned to
+    # and get the room linked to that counter
+    room = frappe.db.get_value(
+        "Queue Counter",
+        {"assigned_user": user, "is_active": 1},
+        "room"
+    )
 
-        frappe.get_doc({
-            "doctype": "Queue Entry",
-            "patient": self.patient,
-            "department": next_step.department,
-            "priority": self.priority,
-            "care_pathway": self.care_pathway,
-            "current_step": next_step.order,
-            "status": "Waiting",
-            "token_number": self.token_number
-        }).insert(ignore_permissions=True)
+    if room:
+        # Only show Queue Entries that belong to this room
+        return f'`tabQueue Entry`.`room` = "{room}"'
 
-        frappe.db.commit()
-
-        frappe.msgprint(
-            f"Patient enqueued to {next_step.department}",
-            alert=True
-        )
+    # User has no counter assigned — show nothing
+    return "1=0"

@@ -5,7 +5,7 @@
 from frappe.model.document import Document
 
 
-class ConsultationRoom(Document):
+class QMSRoom(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -13,11 +13,12 @@ class ConsultationRoom(Document):
 
 	if TYPE_CHECKING:
 		from frappe.types import DF
+		from hqs.hqs.doctype.qms_room_routing.qms_room_routing import QMSRoomRouting
 
-		description: DF.SmallText | None
-		room_name: DF.Data
-		room_number: DF.Data | None
-		status: DF.Literal["Active", "Inactive"]
+		active: DF.Check
+		allowed_next_rooms: DF.Table[QMSRoomRouting]
+		room_name: DF.Data | None
+		room_type: DF.Literal["Reception", "Triage", "Lab", "Consultation", "Pharmacy", "Radiology"]
 	# end: auto-generated types
 
 	pass

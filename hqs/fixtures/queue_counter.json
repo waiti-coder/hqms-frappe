@@ -1,42 +1,145 @@
 [
  {
-  "consultation_room": null,
+  "assigned_user": null,
+  "counter_name": "Counter 2",
+  "display_order": 0,
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-29 01:02:10.671233",
+  "name": "Counter 2",
+  "room": "Reception"
+ },
+ {
+  "assigned_user": null,
+  "counter_name": "Counter 3",
+  "display_order": 0,
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-29 01:02:03.008602",
+  "name": "Counter 3",
+  "room": "Reception"
+ },
+ {
+  "assigned_user": "lab@demo.com",
+  "counter_name": "Room 7",
+  "display_order": 0,
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-29 01:35:48.203722",
+  "name": "Room 7",
+  "room": "Lab"
+ },
+ {
+  "assigned_user": null,
+  "counter_name": "Room 6",
+  "display_order": 0,
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-29 01:01:38.949492",
+  "name": "Room 6",
+  "room": "Pharmacy"
+ },
+ {
+  "assigned_user": null,
+  "counter_name": "Room 8",
+  "display_order": 0,
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-29 01:00:47.292894",
+  "name": "Room 8",
+  "room": "Radiology"
+ },
+ {
+  "assigned_user": "doc1@demo.com",
+  "counter_name": "Room 1",
+  "display_order": 0,
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-29 01:53:54.797002",
+  "name": "Room 1",
+  "room": "Consultation 1"
+ },
+ {
+  "assigned_user": null,
+  "counter_name": "Room 2",
+  "display_order": 0,
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-29 01:00:22.329851",
+  "name": "Room 2",
+  "room": "Consultation 2"
+ },
+ {
+  "assigned_user": null,
+  "counter_name": "Room 3",
+  "display_order": 0,
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-29 01:00:12.887688",
+  "name": "Room 3",
+  "room": "Consultation 3"
+ },
+ {
+  "assigned_user": null,
   "counter_name": "Triage",
-  "department": "Triage",
+  "display_order": 0,
   "docstatus": 0,
   "doctype": "Queue Counter",
   "is_active": 1,
   "modified": "2026-04-12 15:21:25.299969",
-  "name": "Triage"
+  "name": "Triage",
+  "room": null
  },
  {
-  "consultation_room": null,
+  "assigned_user": null,
   "counter_name": "Consultation",
-  "department": "Consultation",
+  "display_order": 0,
   "docstatus": 0,
   "doctype": "Queue Counter",
   "is_active": 1,
   "modified": "2026-04-12 15:23:32.819154",
-  "name": "Consultation"
+  "name": "Consultation",
+  "room": null
  },
  {
-  "consultation_room": null,
+  "assigned_user": null,
   "counter_name": "OPD",
-  "department": "OPD",
+  "display_order": 0,
   "docstatus": 0,
   "doctype": "Queue Counter",
   "is_active": 1,
   "modified": "2026-04-14 13:52:09.416252",
-  "name": "OPD"
+  "name": "OPD",
+  "room": null
  },
  {
-  "consultation_room": null,
+  "assigned_user": null,
   "counter_name": "Reception",
-  "department": "Reception",
+  "display_order": 0,
   "docstatus": 0,
   "doctype": "Queue Counter",
   "is_active": 1,
   "modified": "2026-04-12 15:22:28.092705",
-  "name": "Reception"
+  "name": "Reception",
+  "room": null
+ },
+ {
+  "assigned_user": "reception1@test.com",
+  "counter_name": "Counter 1",
+  "display_order": 1,
+  "docstatus": 0,
+  "doctype": "Queue Counter",
+  "is_active": 1,
+  "modified": "2026-04-29 02:38:53.771487",
+  "name": "Counter 1",
+  "room": "Reception"
  }
 ]

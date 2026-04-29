@@ -1,69 +1,53 @@
 {
  "actions": [],
+ "allow_bulk_edit": 1,
  "allow_rename": 1,
- "autoname": "field:counter_name",
- "creation": "2026-04-11 17:28:27.796270",
+ "autoname": "field:room_name",
+ "creation": "2026-04-28 11:45:17.538654",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "counter_name",
-  "room",
-  "display_order",
-  "is_active",
-  "assigned_user"
+  "room_name",
+  "active",
+  "room_type",
+  "allowed_next_rooms"
  ],
  "fields": [
   {
-   "fieldname": "counter_name",
+   "fieldname": "room_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Counter Name",
-   "reqd": 1,
+   "label": "Room Name",
    "unique": 1
   },
   {
-   "fieldname": "room",
-   "fieldtype": "Link",
-   "label": "Room",
-   "options": "QMS Room"
+   "fieldname": "room_type",
+   "fieldtype": "Select",
+   "label": "Room Type",
+   "options": "Reception\nTriage\nLab\nConsultation\nPharmacy\nRadiology"
   },
   {
    "default": "0",
-   "fieldname": "is_active",
+   "fieldname": "active",
    "fieldtype": "Check",
-   "label": "Is Active"
+   "label": "Active"
   },
   {
-   "fieldname": "assigned_user",
-   "fieldtype": "Link",
-   "label": "Assigned User",
-   "options": "User"
-  },
-  {
-   "fieldname": "display_order",
-   "fieldtype": "Int",
-   "label": "Display Order"
+   "fieldname": "allowed_next_rooms",
+   "fieldtype": "Table",
+   "label": "Allowed Next Room",
+   "options": "QMS Room Routing"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-29 02:14:09.698142",
+ "modified": "2026-04-29 01:59:26.444779",
  "modified_by": "Administrator",
  "module": "hqs",
- "name": "Queue Counter",
+ "name": "QMS Room",
  "naming_rule": "By fieldname",
  "owner": "waitituedwin57@gmail.com",
  "permissions": [
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Receptionist",
-   "share": 1
-  },
   {
    "create": 1,
    "delete": 1,
@@ -77,26 +61,12 @@
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,
    "read": 1,
    "report": 1,
-   "role": "Nursing User",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "Laboratory User",
+   "role": "Receptionist",
    "share": 1,
    "write": 1
   },

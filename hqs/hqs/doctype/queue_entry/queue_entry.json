@@ -9,21 +9,17 @@
   "token_number",
   "patient",
   "care_pathway",
-  "patient_name",
-  "department",
+  "room",
   "priority",
   "called_at",
   "column_break_vpji",
   "status",
-  "consultation_room",
   "counter",
-  "next_department",
+  "next_room",
   "current_step",
   "served_at",
   "enqueued_at",
-  "column_break_zpyv",
-  "appoinment",
-  "notes"
+  "column_break_zpyv"
  ],
  "fields": [
   {
@@ -36,25 +32,13 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Patient",
-   "options": "Patient",
-   "reqd": 1
-  },
-  {
-   "fieldname": "patient_name",
-   "fieldtype": "Data",
-   "label": "Patient Name"
-  },
-  {
-   "fieldname": "department",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Department",
-   "options": "Medical Department",
+   "options": "HQS Patient",
    "reqd": 1
   },
   {
    "fieldname": "counter",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Counter",
    "options": "Queue Counter"
   },
@@ -94,48 +78,42 @@
    "label": "Served At"
   },
   {
-   "fieldname": "next_department",
-   "fieldtype": "Link",
-   "label": "Next Department",
-   "options": "Medical Department"
-  },
-  {
    "fieldname": "column_break_zpyv",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "appoinment",
-   "fieldtype": "Link",
-   "label": "Appoinment",
-   "options": "Patient Appointment"
-  },
-  {
-   "fieldname": "notes",
-   "fieldtype": "Small Text",
-   "label": "Notes"
-  },
-  {
    "fieldname": "care_pathway",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Care Pathway",
    "options": "Care Pathways"
   },
   {
    "fieldname": "current_step",
    "fieldtype": "Int",
-   "label": "Current step"
+   "label": "Current step",
+   "read_only": 1
   },
   {
-   "fieldname": "consultation_room",
+   "fieldname": "room",
    "fieldtype": "Link",
-   "label": "Consultation Room",
-   "options": "Consultation Room"
+   "in_list_view": 1,
+   "label": "Room",
+   "options": "QMS Room",
+   "reqd": 1
+  },
+  {
+   "fieldname": "next_room",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Next Room",
+   "options": "QMS Room"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-21 14:17:32.989980",
+ "modified": "2026-04-29 02:44:48.851801",
  "modified_by": "Administrator",
  "module": "hqs",
  "name": "Queue Entry",
@@ -193,6 +171,18 @@
    "read": 1,
    "report": 1,
    "role": "Receptionist",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Doctor",
    "share": 1,
    "write": 1
   }

@@ -1,33 +1,25 @@
 {
  "actions": [],
+ "allow_bulk_edit": 1,
  "allow_rename": 1,
- "creation": "2026-04-12 14:19:24.195838",
+ "creation": "2026-04-28 18:13:08.367437",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "order",
-  "room",
-  "service_type"
+  "next_room_section",
+  "next_room"
  ],
  "fields": [
   {
-   "fieldname": "order",
-   "fieldtype": "Int",
-   "in_list_view": 1,
-   "label": "Order",
-   "reqd": 1
+   "fieldname": "next_room_section",
+   "fieldtype": "Section Break",
+   "label": "Next Room"
   },
   {
-   "fieldname": "service_type",
-   "fieldtype": "Data",
-   "label": "Service Type"
-  },
-  {
-   "fieldname": "room",
+   "fieldname": "next_room",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Room",
+   "label": "Next Room",
    "options": "QMS Room"
   }
  ],
@@ -35,10 +27,10 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-04-28 20:12:08.736942",
+ "modified": "2026-04-28 18:15:55.162878",
  "modified_by": "Administrator",
  "module": "hqs",
- "name": "Care Path Steps",
+ "name": "QMS Room Routing",
  "owner": "Administrator",
  "permissions": [],
  "row_format": "Dynamic",

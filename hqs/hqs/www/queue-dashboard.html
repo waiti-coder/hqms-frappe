@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>South B Hospital - Queue System</title>
+    <title>Queue System</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -32,10 +32,32 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        .logo-south { font-size: 1.8rem; font-weight: 900; color: var(--blue); letter-spacing: 2px; }
-        .logo-south span { color: var(--green); }
-        .logo-hospital { font-size: 0.9rem; font-weight: 700; color: var(--green); letter-spacing: 4px; }
-        .logo-tagline { font-size: 0.75rem; color: #999; font-style: italic; margin-top: 2px; }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        #org-logo {
+            height: 52px;
+            max-width: 120px;
+            object-fit: contain;
+            display: none;
+        }
+
+        #org-name {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--blue);
+            letter-spacing: 2px;
+        }
+
+        .logo-tagline {
+            font-size: 0.75rem;
+            color: #999;
+            font-style: italic;
+            margin-top: 2px;
+        }
 
         .header-right { text-align: right; }
         .header-right #clock { font-size: 2rem; font-weight: 700; color: var(--blue); }
@@ -68,10 +90,7 @@
             50% { opacity: 0; }
         }
 
-        .main {
-            flex: 1;
-            padding: 20px 30px;
-        }
+        .main { flex: 1; padding: 20px 30px; }
 
         .counters-grid {
             display: grid;
@@ -93,8 +112,8 @@
             padding: 12px 18px;
         }
 
-        .counter-header .counter-name { font-size: 1.1rem; font-weight: 700; }
-        .counter-header .counter-dept { font-size: 0.8rem; opacity: 0.8; margin-top: 2px; }
+        /* Counter name only — no room shown */
+        .counter-name { font-size: 1.1rem; font-weight: 700; }
 
         .counter-body { padding: 16px 18px; }
 
@@ -107,12 +126,29 @@
             border: 2px solid var(--green);
         }
 
-        .now-token .label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-        .now-token .token-num { font-size: 2.5rem; font-weight: 900; color: var(--green); line-height: 1.1; }
+        .now-token .label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .now-token .token-num {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--green);
+            line-height: 1.1;
+        }
 
         .counter-idle { text-align: center; padding: 20px; color: #bbb; font-size: 0.9rem; }
 
-        .waiting-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .waiting-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
 
         .waiting-tokens { display: flex; flex-wrap: wrap; gap: 6px; }
 
@@ -124,8 +160,8 @@
         }
 
         .waiting-token.emergency { background: #fdecea; color: #c62828; border: 1px solid #ef9a9a; }
-        .waiting-token.urgent { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
-        .waiting-token.normal { background: var(--light-blue); color: var(--blue); border: 1px solid #90caf9; }
+        .waiting-token.urgent    { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+        .waiting-token.normal    { background: var(--light-blue); color: var(--blue); border: 1px solid #90caf9; }
 
         .no-waiting { color: #ccc; font-size: 0.85rem; }
 
@@ -146,10 +182,12 @@
 <body>
 
 <header>
-    <div>
-        <div class="logo-south">SOUTH <span>+B</span></div>
-        <div class="logo-hospital">H O S P I T A L</div>
-        <div class="logo-tagline">we care</div>
+    <div class="header-left">
+        <img id="org-logo" src="" alt="Logo" />
+        <div>
+            <div id="org-name">Queue System</div>
+            <div class="logo-tagline">Queue Management System</div>
+        </div>
     </div>
     <div class="header-right">
         <div id="clock">--:--:--</div>
@@ -169,11 +207,12 @@
 </div>
 
 <footer>
-    <div>South B Hospital — Queue Management System</div>
+    <div id="footer-name">Queue Management System</div>
     <div>Auto-refreshes every <span>5 seconds</span></div>
 </footer>
 
 <script>
+    // ── CLOCK ──
     function updateClock() {
         const now = new Date();
         document.getElementById('clock').textContent = now.toLocaleTimeString();
@@ -184,6 +223,26 @@
     setInterval(updateClock, 1000);
     updateClock();
 
+    // ── LOAD LOGO AND NAME FROM QMS SETTINGS ──
+    fetch('/api/method/hqs.hqs.api.get_qms_settings')
+        .then(r => r.json())
+        .then(d => {
+            if (!d.message) return;
+            const s = d.message;
+            if (s.organization_name) {
+                document.getElementById('org-name').textContent = s.organization_name;
+                document.getElementById('footer-name').textContent = s.organization_name + ' — Queue Management System';
+                document.title = s.organization_name + ' — Queue System';
+            }
+            if (s.logo) {
+                const img = document.getElementById('org-logo');
+                img.src = s.logo;
+                img.style.display = 'block';
+            }
+        })
+        .catch(() => {});
+
+    // ── FETCH QUEUE ──
     function fetchQueue() {
         fetch('/api/method/hqs.hqs.api.get_queue_dashboard')
             .then(res => res.json())
@@ -193,6 +252,7 @@
             .catch(err => console.error('Queue fetch error:', err));
     }
 
+    // ── RENDER — counter name only, no room shown ──
     function renderCounters({ counters, serving, waiting }) {
         const grid = document.getElementById('counters-grid');
 
@@ -202,8 +262,11 @@
         }
 
         grid.innerHTML = counters.map(counter => {
+            // Match serving by counter name
             const current = serving.find(s => s.counter === counter.counter_name);
-            const deptWaiting = waiting.filter(w => w.department === counter.department);
+
+            // Match waiting by room (internal — not shown to patient)
+            const roomWaiting = waiting.filter(w => w.room === counter.room);
 
             const nowServingHTML = current ? `
                 <div class="now-token">
@@ -212,11 +275,11 @@
                 </div>
             ` : `<div class="counter-idle">— Available —</div>`;
 
-            const waitingHTML = deptWaiting.length > 0 ? `
-                <div class="waiting-label">Waiting (${deptWaiting.length})</div>
+            const waitingHTML = roomWaiting.length > 0 ? `
+                <div class="waiting-label">Waiting (${roomWaiting.length})</div>
                 <div class="waiting-tokens">
-                    ${deptWaiting.map(w => `
-                        <span class="waiting-token ${w.priority.toLowerCase()}">${w.token_number}</span>
+                    ${roomWaiting.map(w => `
+                        <span class="waiting-token ${(w.priority || 'normal').toLowerCase()}">${w.token_number}</span>
                     `).join('')}
                 </div>
             ` : `<div class="no-waiting">No patients waiting</div>`;
@@ -225,7 +288,6 @@
                 <div class="counter-card">
                     <div class="counter-header">
                         <div class="counter-name">${counter.counter_name}</div>
-                        <div class="counter-dept">${counter.department}</div>
                     </div>
                     <div class="counter-body">
                         ${nowServingHTML}

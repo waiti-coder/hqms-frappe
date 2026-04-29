@@ -1,0 +1,123 @@
+[
+ {
+  "active": 1,
+  "allowed_next_rooms": [
+   {
+    "next_room": "Lab"
+   },
+   {
+    "next_room": "Pharmacy"
+   }
+  ],
+  "docstatus": 0,
+  "doctype": "QMS Room",
+  "modified": "2026-04-29 00:53:18.574103",
+  "name": "Consultation 2",
+  "room_name": "Consultation 2",
+  "room_type": "Consultation"
+ },
+ {
+  "active": 1,
+  "allowed_next_rooms": [
+   {
+    "next_room": "Lab"
+   },
+   {
+    "next_room": "Pharmacy"
+   },
+   {
+    "next_room": "Triage"
+   }
+  ],
+  "docstatus": 0,
+  "doctype": "QMS Room",
+  "modified": "2026-04-29 01:35:27.308987",
+  "name": "Reception",
+  "room_name": "Reception",
+  "room_type": "Reception"
+ },
+ {
+  "active": 1,
+  "allowed_next_rooms": [],
+  "docstatus": 0,
+  "doctype": "QMS Room",
+  "modified": "2026-04-29 00:53:30.805180",
+  "name": "Pharmacy",
+  "room_name": "Pharmacy",
+  "room_type": "Pharmacy"
+ },
+ {
+  "active": 1,
+  "allowed_next_rooms": [],
+  "docstatus": 0,
+  "doctype": "QMS Room",
+  "modified": "2026-04-29 00:44:46.726161",
+  "name": "Radiology",
+  "room_name": "Radiology",
+  "room_type": "Radiology"
+ },
+ {
+  "active": 1,
+  "allowed_next_rooms": [
+   {
+    "next_room": "Lab"
+   },
+   {
+    "next_room": "Pharmacy"
+   }
+  ],
+  "docstatus": 0,
+  "doctype": "QMS Room",
+  "modified": "2026-04-29 00:44:02.861810",
+  "name": "Consultation 3",
+  "room_name": "Consultation 3",
+  "room_type": "Consultation"
+ },
+ {
+  "active": 1,
+  "allowed_next_rooms": [
+   {
+    "next_room": "Lab"
+   },
+   {
+    "next_room": "Pharmacy"
+   }
+  ],
+  "docstatus": 0,
+  "doctype": "QMS Room",
+  "modified": "2026-04-29 00:43:06.470400",
+  "name": "Consultation 1",
+  "room_name": "Consultation 1",
+  "room_type": "Consultation"
+ },
+ {
+  "active": 1,
+  "allowed_next_rooms": [],
+  "docstatus": 0,
+  "doctype": "QMS Room",
+  "modified": "2026-04-28 17:55:16.770289",
+  "name": "Triage",
+  "room_name": "Triage",
+  "room_type": "Triage"
+ },
+ {
+  "active": 1,
+  "allowed_next_rooms": [
+   {
+    "next_room": "Consultation 1"
+   },
+   {
+    "next_room": "Consultation 2"
+   },
+   {
+    "next_room": "Consultation 3"
+   }
+  ],
+  "docstatus": 0,
+  "doctype": "QMS Room",
+  "modified": "2026-04-29 01:35:09.523497",
+  "name": "Lab",
+  "room_name": "Lab",
+  "room_type": "Lab"
+ }
+]

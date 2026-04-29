@@ -1,0 +1,122 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 00:53:18.574103",
+  "name": "fup7lgsh79",
+  "next_room": "Lab",
+  "parent": "Consultation 2",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 00:43:06.470400",
+  "name": "ggait48ujn",
+  "next_room": "Lab",
+  "parent": "Consultation 1",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 01:35:27.308987",
+  "name": "hladgphea5",
+  "next_room": "Lab",
+  "parent": "Reception",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 01:35:09.523497",
+  "name": "797a0bktic",
+  "next_room": "Consultation 1",
+  "parent": "Lab",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 00:44:02.861810",
+  "name": "9asjepdkh6",
+  "next_room": "Lab",
+  "parent": "Consultation 3",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 00:53:18.574103",
+  "name": "fupf46vdio",
+  "next_room": "Pharmacy",
+  "parent": "Consultation 2",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 00:43:06.470400",
+  "name": "gga747pscm",
+  "next_room": "Pharmacy",
+  "parent": "Consultation 1",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 01:35:27.308987",
+  "name": "hladc9vaqj",
+  "next_room": "Pharmacy",
+  "parent": "Reception",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 01:35:09.523497",
+  "name": "797lig6cl9",
+  "next_room": "Consultation 2",
+  "parent": "Lab",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 00:44:02.861810",
+  "name": "9asimn7ehl",
+  "next_room": "Pharmacy",
+  "parent": "Consultation 3",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 01:35:27.308987",
+  "name": "hlameneukd",
+  "next_room": "Triage",
+  "parent": "Reception",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "QMS Room Routing",
+  "modified": "2026-04-29 01:35:09.523497",
+  "name": "797e8jj1us",
+  "next_room": "Consultation 3",
+  "parent": "Lab",
+  "parentfield": "allowed_next_rooms",
+  "parenttype": "QMS Room"
+ }
+]

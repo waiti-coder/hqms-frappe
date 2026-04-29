@@ -14,11 +14,11 @@ class CarePathSteps(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		department: DF.Link
 		order: DF.Int
 		parent: DF.Data
 		parentfield: DF.Data
 		parenttype: DF.Data
+		room: DF.Link | None
 		service_type: DF.Data | None
 	# end: auto-generated types
 

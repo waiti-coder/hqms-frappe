@@ -5,7 +5,7 @@
 from frappe.model.document import Document
 
 
-class DoctorRoomAssignment(Document):
+class QMSRoomRouting(Document):
 	# begin: auto-generated types
 	# This code is auto-generated. Do not modify anything in this block.
 
@@ -14,10 +14,10 @@ class DoctorRoomAssignment(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
-		consultation_room: DF.Link | None
-		date: DF.Date | None
-		doctor: DF.Link | None
-		status: DF.Literal["Active", "On Break", "Done"]
+		next_room: DF.Link | None
+		parent: DF.Data
+		parentfield: DF.Data
+		parenttype: DF.Data
 	# end: auto-generated types
 
 	pass
