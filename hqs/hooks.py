@@ -44,4 +44,4 @@ fixtures = [
     }
 ]
 # hooks.py
-on_session_creation = "hqs.hqs.api.set_default_route"
+oon_session_creation = "hqs.hqs.api.set_default_route"

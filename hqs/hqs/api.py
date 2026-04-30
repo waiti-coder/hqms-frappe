@@ -383,13 +383,11 @@ def get_department_stats(department: str):
     is_system_manager = "System Manager" in frappe.get_roles(user)
 
     if is_system_manager:
-        # System Manager sees all rooms
         rooms = frappe.get_all('QMS Room',
             filters={'room_type': department},
             pluck='name'
         )
     else:
-        # Regular users only see their own assigned room
         room = get_current_user_room()
         rooms = [room] if room else []
 
@@ -441,12 +439,9 @@ def get_department_stats(department: str):
 
 @frappe.whitelist(allow_guest=True)
 def debug_counters():
-    rooms = frappe.get_all("QMS Room",
-        fields=["name", "room_type", "active"]
-    )
+    rooms = frappe.get_all("QMS Room", fields=["name", "room_type", "active"])
     counters = frappe.get_all("Queue Counter",
-        fields=["name", "counter_name", "room", "is_active", "assigned_user"]
-    )
+        fields=["name", "counter_name", "room", "is_active", "assigned_user"])
     return {"rooms": rooms, "counters": counters}
 
 
@@ -487,7 +482,7 @@ def debug_my_session():
 # SESSION / DEFAULT ROUTE
 # ---------------------------------------------------------------------------
 
-# Roles that should land on reception-desks after login
+# Roles that should land on reception-desks after login and when clicking Home
 RECEPTION_ROLES = {
     "Receptionist",
     "Nursing User",
@@ -502,10 +497,10 @@ def set_default_route(**kwargs):
     Called on session creation via hooks.py:
         on_session_creation = "hqs.hqs.api.set_default_route"
 
-    - Does NOT write to the database (no home_page column needed)
-    - Uses frappe.local.response to redirect on login
-    - Also sets it so clicking Home goes back to reception-desks
+    - Redirects matching roles to reception-desks on login
+    - Also updates the Role's home_page so the Home button works too
     - Guest users are safely skipped
+    - No home_page column needed on User doctype
     """
     user = frappe.session.user
 
@@ -514,6 +509,15 @@ def set_default_route(**kwargs):
         return
 
     user_roles = set(frappe.get_roles(user))
+    matched = user_roles & RECEPTION_ROLES
 
-    if user_roles & RECEPTION_ROLES:
-        frappe.local.response["home_page"] = "/desk/reception-desks"
+    if matched:
+        # 1. Redirect immediately after login
+        frappe.response["home_page"] = "/desk/reception-desks"
+
+        # 2. Set home_page on each matched Role so Home button also works
+        for role in matched:
+            try:
+                frappe.db.set_value("Role", role, "home_page", "reception-desks")
+            except Exception:
+                pass  # Role may not have home_page field — safe to skip
