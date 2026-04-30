@@ -402,7 +402,7 @@ def get_department_stats(department: str):
 
     now_serving = frappe.db.get_value('Queue Entry',
         {'room': ['in', rooms], 'status': ['in', ['Called', 'Serving']]},
-        ['token_number', 'patient_name', 'room'],
+        ['token_number',  'room'],
         as_dict=True, order_by='called_at desc'
     )
 
