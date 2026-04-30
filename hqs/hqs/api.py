@@ -377,3 +377,68 @@ def call_next_patient(room: str, counter: str, queue_entry: str = None):
         "counter": counter,
         "message": f"Called {entry.token_number}"
     }
+@frappe.whitelist()
+def get_department_stats(department: str):
+    today = frappe.utils.today()
+
+    # get all rooms of this type e.g. all "Reception" rooms
+    rooms = frappe.get_all('QMS Room',
+        filters={'room_type': department},
+        pluck='name'
+    )
+
+    if not rooms:
+        return {
+            'waiting': 0, 'serving': 0,
+            'called': 0, 'done': 0,
+            'now_serving': None, 'hourly': []
+        }
+
+    waiting = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': 'Waiting'})
+    serving = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': ['in', ['Called', 'Serving']]})
+    called  = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': 'Called'})
+    done    = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': 'Done',
+                                               'served_at': ['>=', today]})
+
+    now_serving = frappe.db.get_value('Queue Entry',
+        {'room': ['in', rooms], 'status': ['in', ['Called', 'Serving']]},
+        ['token_number', 'patient_name', 'room'],
+        as_dict=True, order_by='called_at desc'
+    )
+
+    rooms_str = "', '".join(rooms)
+    hourly_raw = frappe.db.sql(f"""
+        SELECT HOUR(served_at) as hr, COUNT(*) as count
+        FROM `tabQueue Entry`
+        WHERE room IN ('{rooms_str}')
+          AND status = 'Done'
+          AND DATE(served_at) = %(today)s
+        GROUP BY HOUR(served_at)
+    """, {'today': today}, as_dict=True)
+
+    hour_map = {r.hr: r.count for r in hourly_raw}
+    hourly = [{'hour': h, 'count': hour_map.get(h, 0)} for h in range(0, 24)]
+
+    return {
+        'waiting': waiting,
+        'serving': serving,
+        'called': called,
+        'done': done,
+        'now_serving': now_serving,
+        'hourly': hourly
+    }
+
+    # api.py
+def set_default_route():
+    roles = frappe.get_roles(frappe.session.user)
+    role_route_map = {
+        "Receptionist":   "qms-desk",
+        "Nursing User":   "qms-desk",
+        "Laboratory User":"qms-desk",
+        "Pharmacist":     "qms-desk",
+    }
+    for role, route in role_route_map.items():
+        if role in roles:
+            frappe.db.set_value("User", frappe.session.user, 
+                "default_app", f"/desk/{route}")
+            break

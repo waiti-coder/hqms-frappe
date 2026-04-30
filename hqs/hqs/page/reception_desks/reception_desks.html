@@ -1,0 +1,67 @@
+<div class="reception-page">
+
+  <div class="rp-topbar">
+    <div class="rp-topbar-left">
+      <span class="rp-title" id="rp-title">My Desk</span>
+      <span class="rp-dept-badge" id="rp-dept-badge"></span>
+    </div>
+    <div class="rp-user-info">Logged in as <strong id="rp-user"></strong></div>
+  </div>
+
+  <div class="rp-cards">
+    <div class="rp-card">
+      <div class="rp-card-label">Waiting</div>
+      <div class="rp-card-value red" id="count-waiting">—</div>
+      <div class="rp-card-sub">in queue</div>
+    </div>
+    <div class="rp-card">
+      <div class="rp-card-label">Being served</div>
+      <div class="rp-card-value blue" id="count-serving">—</div>
+      <div class="rp-card-sub">at counters</div>
+    </div>
+    <div class="rp-card">
+      <div class="rp-card-label">Served today</div>
+      <div class="rp-card-value green" id="count-done">—</div>
+      <div class="rp-card-sub">since midnight</div>
+    </div>
+  </div>
+
+  <div class="rp-section">
+    <div class="rp-chart-wrap">
+      <div class="rp-chart-title">Patients served per hour — today</div>
+      <div class="rp-bars" id="rp-bars"></div>
+      <div class="rp-bar-times">
+        <span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>Now</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rp-now-serving" id="rp-now-serving" style="display:none">
+    <span class="rp-ns-label">Now serving</span>
+    <span class="rp-ns-token" id="ns-token"></span>
+    <span class="rp-ns-name" id="ns-name"></span>
+    <span class="rp-ns-counter" id="ns-counter"></span>
+  </div>
+
+  <div class="rp-nav-cards">
+    <div class="rp-nav-card" id="nav-waiting">
+      <div class="rp-nav-icon rp-icon-red"></div>
+      <div class="rp-nav-count red" id="nav-count-waiting">—</div>
+      <div class="rp-nav-label">Waiting in queue</div>
+      <div class="rp-nav-arrow">Open queue list ↗</div>
+    </div>
+    <div class="rp-nav-card" id="nav-called">
+      <div class="rp-nav-icon rp-icon-blue"></div>
+      <div class="rp-nav-count blue" id="nav-count-called">—</div>
+      <div class="rp-nav-label">Currently called</div>
+      <div class="rp-nav-arrow">Open queue list ↗</div>
+    </div>
+    <div class="rp-nav-card" id="nav-new">
+      <div class="rp-nav-icon rp-icon-green"></div>
+      <div class="rp-nav-count green">+</div>
+      <div class="rp-nav-label">New queue entry</div>
+      <div class="rp-nav-arrow">Open form ↗</div>
+    </div>
+  </div>
+
+</div>
