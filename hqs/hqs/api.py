@@ -452,6 +452,7 @@ def debug_counters():
     return {"rooms": rooms, "counters": counters}
 
 
+
 @frappe.whitelist()
 def debug_my_session():
     user = frappe.session.user
