@@ -442,3 +442,16 @@ def set_default_route():
             frappe.db.set_value("User", frappe.session.user, 
                 "default_app", f"/desk/{route}")
             break
+
+@frappe.whitelist()
+def set_default_route():
+    # Get current user's roles
+    user_roles = frappe.get_roles(frappe.session.user)
+    
+    if "Receptionist" in user_roles:
+        frappe.db.set_value("User", frappe.session.user, 
+                            "home_page", "reception-desks")
+    else:
+        # Reset others to default
+        frappe.db.set_value("User", frappe.session.user, 
+                            "home_page", "")            

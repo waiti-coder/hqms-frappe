@@ -10,7 +10,26 @@
  "name": "reception-desks",
  "owner": "Administrator",
  "page_name": "reception-desks",
- "roles": [],
+ "roles": [
+  {
+   "role": "Laboratory User"
+  },
+  {
+   "role": "Pharmacy"
+  },
+  {
+   "role": "Doctor"
+  },
+  {
+   "role": "Nursing User"
+  },
+  {
+   "role": "Receptionist"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
  "script": null,
  "standard": "Yes",
  "style": null,
