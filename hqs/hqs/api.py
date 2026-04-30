@@ -490,27 +490,16 @@ def debug_my_session():
 # SESSION / DEFAULT ROUTE
 # ---------------------------------------------------------------------------
 
-# NOTE: No @frappe.whitelist() — this is a hook, not an API endpoint
-def set_default_route(**kwargs):
-    """
-    Called on session creation via hooks.py:
-        on_session_creation = "hqs.hqs.api.set_default_route"
-    """
-    user = frappe.session.user
-
-    if not user or user == "Guest":
-        return
-
-    RECEPTION_ROLES = {
-        "Receptionist",
-        "Nursing User",
-        "Laboratory User",
-        "Pharmacy",
-        "Doctor",
-        "Radiology",
-    }
-
-    user_roles = set(frappe.get_roles(user))
-
-    if user_roles & RECEPTION_ROLES:
-        frappe.response["home_page"] = "/desk/reception-desks"
+# NOTE: No @frappe.whitelist() — this is a hook, not an API endpoin
+@frappe.whitelist()
+def set_default_route():
+    # Get current user's roles
+    user_roles = frappe.get_roles(frappe.session.user)
+    
+    if "Receptionist" in user_roles:
+        frappe.db.set_value("User", frappe.session.user, 
+                            "home_page", "reception-desks")
+    else:
+        # Reset others to default
+        frappe.db.set_value("User", frappe.session.user, 
+                            "home_page", "")

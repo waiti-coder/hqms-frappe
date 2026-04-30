@@ -1,7 +1,7 @@
 {
  "app": "hqs",
  "charts": [],
- "content": "[{\"id\":\"6YEmqWQfHr\",\"type\":\"card\",\"data\":{\"card_name\":\"Queue Management\",\"col\":12}},{\"id\":\"yjqVHEeWn8\",\"type\":\"card\",\"data\":{\"card_name\":\"Setup\",\"col\":12}}]",
+ "content": "[{\"id\":\"6YEmqWQfHr\",\"type\":\"card\",\"data\":{\"card_name\":\"Queue Management\",\"col\":12}},{\"id\":\"KOIVpt7Jog\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Workspace\",\"col\":3}}]",
  "creation": "2026-04-13 10:01:14.154376",
  "custom_blocks": [],
  "docstatus": 0,
@@ -46,26 +46,6 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Queue Call",
-   "link_count": 0,
-   "link_to": "Queue Call",
-   "link_type": "DocType",
-   "onboard": 1,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Setup",
-   "link_count": 0,
-   "link_to": "",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Card Break"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
    "label": "Queue Counter",
    "link_count": 0,
    "link_to": "Queue Counter",
@@ -104,8 +84,8 @@
    "type": "Link"
   }
  ],
- "modified": "2026-04-13 10:04:15.460852",
- "modified_by": "Administrator",
+ "modified": "2026-05-01 01:27:42.740792",
+ "modified_by": "waitituedwin57@gmail.com",
  "module": "hqs",
  "name": "HQS",
  "number_cards": [],
@@ -114,7 +94,15 @@
  "quick_lists": [],
  "roles": [],
  "sequence_id": 0.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Workspace",
+   "link_to": "reception-desks",
+   "type": "Page"
+  }
+ ],
  "title": "HQS",
  "type": "Workspace"
 }
