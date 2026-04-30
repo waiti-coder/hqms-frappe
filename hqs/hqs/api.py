@@ -450,6 +450,7 @@ def set_default_route():
         "Laboratory User": "reception-desks",
         "Pharmacy":        "reception-desks",
         "Doctor":          "reception-desks",
+        "Radiology":          "reception-desks",
     }
 
     home_page = ""
