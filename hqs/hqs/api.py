@@ -154,14 +154,17 @@ def create_patient_visit(phone: str, full_name: str, reason_for_visit: str = "")
     }
 
 
-def get_least_busy_counter(room_type="Reception"):
+def get_least_busy_counter(room_name="Reception"):
     """
-    Finds the active counter inside the given room type with the
+    Finds the active counter inside the given room with the
     fewest waiting/called/serving patients.
     """
     room = frappe.db.get_value("QMS Room",
-        {"active": 1, "room_type": room_type}, "name"
+        {"active": 1, "name": room_name}, "name"
     )
+    if not room:
+        # fallback: get any active room
+        room = frappe.db.get_value("QMS Room", {"active": 1}, "name")
     if not room:
         return None
 
@@ -184,10 +187,10 @@ def get_least_busy_counter(room_type="Reception"):
     return {"room": room, "counter": least_busy["name"]}
 
 
-def get_least_busy_room(room_type="Reception"):
-    """Fallback — returns least busy room of a given type."""
+def get_least_busy_room():
+    """Returns the least busy active room."""
     rooms = frappe.get_all("QMS Room",
-        filters={"active": 1, "room_type": room_type},
+        filters={"active": 1},
         fields=["name"]
     )
     if not rooms:
@@ -211,9 +214,7 @@ def get_least_busy_room(room_type="Reception"):
 
 @frappe.whitelist()
 def get_allowed_next_rooms(room: str):
-    """
-    Returns the list of rooms this room is allowed to forward patients to.
-    """
+    """Returns the list of rooms this room can forward patients to."""
     routing = frappe.get_all(
         "QMS Room Routing",
         filters={"parent": room, "parenttype": "QMS Room"},
@@ -224,9 +225,7 @@ def get_allowed_next_rooms(room: str):
 
 @frappe.whitelist()
 def send_to_next_room(queue_entry: str, next_room: str, notes: str = ""):
-    """
-    Clerk manually selects which room to send the patient to next.
-    """
+    """Clerk selects which room to send the patient to next."""
     entry = frappe.get_doc("Queue Entry", queue_entry)
 
     if entry.status not in ["Called", "Serving"]:
@@ -338,9 +337,7 @@ def peek_next_patient(room: str):
 
 @frappe.whitelist()
 def call_next_patient(room: str, counter: str, queue_entry: str = None):
-    """
-    Calls the next patient in the room queue and assigns them to a counter.
-    """
+    """Calls the next patient in the room queue."""
     if queue_entry:
         entry = frappe.get_doc("Queue Entry", queue_entry)
     else:
@@ -373,23 +370,28 @@ def call_next_patient(room: str, counter: str, queue_entry: str = None):
 
 
 # ---------------------------------------------------------------------------
-# STATS — FILTERED BY CURRENT USER'S ROOM
+# STATS — FILTERED BY CURRENT USER'S ROOM (NO DEPARTMENTS)
 # ---------------------------------------------------------------------------
 
 @frappe.whitelist()
-def get_department_stats(department: str):
+def get_room_stats(room: str = None):
+    """
+    Returns stats filtered purely by room.
+    - System Manager: sees all rooms combined
+    - Everyone else: sees only their assigned room
+    """
     today = frappe.utils.today()
     user = frappe.session.user
     is_system_manager = "System Manager" in frappe.get_roles(user)
 
     if is_system_manager:
         rooms = frappe.get_all('QMS Room',
-            filters={'room_type': department},
+            filters={'active': 1},
             pluck='name'
         )
     else:
-        room = get_current_user_room()
-        rooms = [room] if room else []
+        user_room = get_current_user_room()
+        rooms = [user_room] if user_room else []
 
     if not rooms:
         return {
@@ -398,11 +400,10 @@ def get_department_stats(department: str):
             'now_serving': None, 'hourly': []
         }
 
-    waiting = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': 'Waiting'})
-    serving = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': ['in', ['Called', 'Serving']]})
-    called  = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': 'Called'})
-    done    = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': 'Done',
-                                               'served_at': ['>=', today]})
+    waiting  = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': 'Waiting'})
+    serving  = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': ['in', ['Called', 'Serving']]})
+    called   = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': 'Called'})
+    done     = frappe.db.count('Queue Entry', {'room': ['in', rooms], 'status': 'Done', 'served_at': ['>=', today]})
 
     now_serving = frappe.db.get_value('Queue Entry',
         {'room': ['in', rooms], 'status': ['in', ['Called', 'Serving']]},
@@ -433,13 +434,19 @@ def get_department_stats(department: str):
     }
 
 
+# Keep old name as alias so existing frontend calls don't break
+@frappe.whitelist()
+def get_department_stats(department: str = None):
+    return get_room_stats()
+
+
 # ---------------------------------------------------------------------------
 # DEBUG — Remove after testing
 # ---------------------------------------------------------------------------
 
 @frappe.whitelist(allow_guest=True)
 def debug_counters():
-    rooms = frappe.get_all("QMS Room", fields=["name", "room_type", "active"])
+    rooms = frappe.get_all("QMS Room", fields=["name", "active"])
     counters = frappe.get_all("Queue Counter",
         fields=["name", "counter_name", "room", "is_active", "assigned_user"])
     return {"rooms": rooms, "counters": counters}
@@ -482,42 +489,27 @@ def debug_my_session():
 # SESSION / DEFAULT ROUTE
 # ---------------------------------------------------------------------------
 
-# Roles that should land on reception-desks after login and when clicking Home
-RECEPTION_ROLES = {
-    "Receptionist",
-    "Nursing User",
-    "Laboratory User",
-    "Pharmacy",
-    "Doctor",
-    "Radiology",
-}
-
+# NOTE: No @frappe.whitelist() — this is a hook, not an API endpoint
 def set_default_route(**kwargs):
     """
     Called on session creation via hooks.py:
         on_session_creation = "hqs.hqs.api.set_default_route"
-
-    - Redirects matching roles to reception-desks on login
-    - Also updates the Role's home_page so the Home button works too
-    - Guest users are safely skipped
-    - No home_page column needed on User doctype
     """
     user = frappe.session.user
 
-    # Skip Guest
     if not user or user == "Guest":
         return
 
+    RECEPTION_ROLES = {
+        "Receptionist",
+        "Nursing User",
+        "Laboratory User",
+        "Pharmacy",
+        "Doctor",
+        "Radiology",
+    }
+
     user_roles = set(frappe.get_roles(user))
-    matched = user_roles & RECEPTION_ROLES
 
-    if matched:
-        # 1. Redirect immediately after login
+    if user_roles & RECEPTION_ROLES:
         frappe.response["home_page"] = "/desk/reception-desks"
-
-        # 2. Set home_page on each matched Role so Home button also works
-        for role in matched:
-            try:
-                frappe.db.set_value("Role", role, "home_page", "reception-desks")
-            except Exception:
-                pass  # Role may not have home_page field — safe to skip
