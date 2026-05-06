@@ -11,6 +11,7 @@
   "phone_numberid",
   "care_pathway",
   "room",
+  "previous_room",
   "priority",
   "called_at",
   "column_break_vpji",
@@ -114,12 +115,19 @@
    "fieldname": "phone_numberid",
    "fieldtype": "Data",
    "label": "Phone Number/ID"
+  },
+  {
+   "fieldname": "previous_room",
+   "fieldtype": "Link",
+   "label": "Previous Room",
+   "options": "QMS Room",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-04-29 09:47:32.057914",
+ "modified": "2026-05-04 21:06:26.201938",
  "modified_by": "Administrator",
  "module": "hqs",
  "name": "Queue Entry",
