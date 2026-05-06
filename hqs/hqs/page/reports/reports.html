@@ -1,0 +1,245 @@
+<!-- HQS Reports Page -->
+<div class="hqs-reports-page">
+
+  <!-- KPI SUMMARY CARDS -->
+  <div class="hqs-kpi-row">
+
+    <div class="hqs-kpi-card hqs-kpi-blue" data-kpi="total-patients">
+      <div class="hqs-kpi-icon"><i class="fa fa-users"></i></div>
+      <div class="hqs-kpi-content">
+        <div class="hqs-kpi-value">–</div>
+        <div class="hqs-kpi-label">Total Patients</div>
+      </div>
+    </div>
+
+    <div class="hqs-kpi-card hqs-kpi-green" data-kpi="male">
+      <div class="hqs-kpi-icon"><i class="fa fa-male"></i></div>
+      <div class="hqs-kpi-content">
+        <div class="hqs-kpi-value">–</div>
+        <div class="hqs-kpi-label">Male</div>
+      </div>
+    </div>
+
+    <div class="hqs-kpi-card hqs-kpi-pink" data-kpi="female">
+      <div class="hqs-kpi-icon"><i class="fa fa-female"></i></div>
+      <div class="hqs-kpi-content">
+        <div class="hqs-kpi-value">–</div>
+        <div class="hqs-kpi-label">Female</div>
+      </div>
+    </div>
+
+    <div class="hqs-kpi-card hqs-kpi-orange" data-kpi="with-uid">
+      <div class="hqs-kpi-icon"><i class="fa fa-id-card"></i></div>
+      <div class="hqs-kpi-content">
+        <div class="hqs-kpi-value">–</div>
+        <div class="hqs-kpi-label">With UID</div>
+      </div>
+    </div>
+
+    <div class="hqs-kpi-card hqs-kpi-purple" data-kpi="with-email">
+      <div class="hqs-kpi-icon"><i class="fa fa-envelope"></i></div>
+      <div class="hqs-kpi-content">
+        <div class="hqs-kpi-value">–</div>
+        <div class="hqs-kpi-label">With Email</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CHARTS ROW -->
+  <div class="hqs-charts-row">
+
+    <div class="hqs-card">
+      <div class="hqs-card-header">
+        <span>Daily Registrations</span>
+        <span class="hqs-card-badge" id="hqs-period-label"></span>
+      </div>
+      <div id="hqs-daily-chart" style="min-height: 240px;"></div>
+    </div>
+
+    <div class="hqs-card">
+      <div class="hqs-card-header">
+        <span>Gender Distribution</span>
+      </div>
+      <div id="hqs-gender-chart" style="min-height: 240px;"></div>
+    </div>
+
+  </div>
+
+  <!-- AGE CHART -->
+  <div class="hqs-card">
+    <div class="hqs-card-header">
+      <span>Age Group Distribution</span>
+    </div>
+    <div id="hqs-age-chart" style="min-height: 200px;"></div>
+  </div>
+
+  <!-- DETAIL TABLE -->
+  <div class="hqs-card">
+    <div class="hqs-card-header">
+      <span>Patient Records</span>
+      <span class="hqs-record-count" id="hqs-record-count"></span>
+    </div>
+    <div id="hqs-datatable" class="hqs-datatable-wrap"></div>
+  </div>
+
+  <!-- LOADING OVERLAY -->
+  <div id="hqs-loading" class="hqs-loading-overlay" style="display: none;">
+    <div class="hqs-spinner"></div>
+    <span>Loading report data…</span>
+  </div>
+
+</div>
+
+<style>
+  .hqs-reports-page {
+    padding: 16px;
+    position: relative;
+    font-family: var(--font-stack);
+  }
+
+  /* ── KPI CARDS ── */
+  .hqs-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .hqs-kpi-card {
+    border-radius: 10px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card-bg, #fff);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    border-left: 4px solid transparent;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .hqs-kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  }
+  .hqs-kpi-blue   { border-left-color: #2490EF; }
+  .hqs-kpi-green  { border-left-color: #28A745; }
+  .hqs-kpi-pink   { border-left-color: #E91E8C; }
+  .hqs-kpi-orange { border-left-color: #F4A223; }
+  .hqs-kpi-purple { border-left-color: #7B2FD4; }
+  .hqs-kpi-icon { font-size: 22px; opacity: .75; }
+  .hqs-kpi-blue   .hqs-kpi-icon { color: #2490EF; }
+  .hqs-kpi-green  .hqs-kpi-icon { color: #28A745; }
+  .hqs-kpi-pink   .hqs-kpi-icon { color: #E91E8C; }
+  .hqs-kpi-orange .hqs-kpi-icon { color: #F4A223; }
+  .hqs-kpi-purple .hqs-kpi-icon { color: #7B2FD4; }
+  .hqs-kpi-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--heading-color, #1a1a2e);
+    line-height: 1.1;
+  }
+  .hqs-kpi-label {
+    font-size: 11.5px;
+    color: var(--text-muted, #8d99ae);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  /* ── CARDS ── */
+  .hqs-card {
+    background: var(--card-bg, #fff);
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .hqs-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px 8px;
+    font-weight: 600;
+    font-size: 13px;
+    border-bottom: 1px solid var(--border-color, #f0f0f0);
+    color: var(--heading-color, #1a1a2e);
+  }
+  .hqs-card-badge {
+    background: #e8f4fd;
+    color: #2490EF;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  .hqs-record-count {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted, #8d99ae);
+  }
+
+  /* ── CHARTS ROW ── */
+  .hqs-charts-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .hqs-charts-row .hqs-card {
+    margin-bottom: 0;
+  }
+  @media (max-width: 768px) {
+    .hqs-charts-row { grid-template-columns: 1fr; }
+  }
+
+  /* ── TABLE ── */
+  .hqs-datatable-wrap { overflow-x: auto; }
+  .hqs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+  .hqs-table th {
+    background: var(--control-bg, #f7f7f7);
+    padding: 9px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    white-space: nowrap;
+  }
+  .hqs-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border-color, #f0f0f0);
+    color: var(--text-color, #333);
+    vertical-align: middle;
+  }
+  .hqs-table tr:hover td {
+    background: var(--control-bg, #f9f9f9);
+  }
+
+  /* ── LOADING ── */
+  .hqs-loading-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255,255,255,0.75);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    z-index: 100;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .hqs-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid #e0e0e0;
+    border-top-color: #2490EF;
+    border-radius: 50%;
+    animation: hqs-spin .7s linear infinite;
+  }
+  @keyframes hqs-spin { to { transform: rotate(360deg); } }
+</style>
